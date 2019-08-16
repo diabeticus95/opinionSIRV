@@ -37,7 +37,7 @@ Network::~Network() {
 
 void Network::draw_node_connections(int* tmp, int i){
 // Lower matrix triangle drawing, leaving already drawn spots empty, by starting iterations with i, which is number of column
-	bool debug = 1;
+	bool debug = 0;
 	for(int j = i; j<size; j++){
 		if(j == i) tmp[j] = 0;
 		else{
@@ -54,7 +54,7 @@ void Network::draw_node_connections(int* tmp, int i){
 		if (net[j] == i) occurences.push_back(j);
 	}
 	for (auto j : occurences){
-		neighbors.push_back(track_node_by_index_of_neighbor(j));
+		neighbors.push_back(track_node_by_index_in_net(j));
 	}
 	// i assume there were no neighbors
 	for(int j = 0; j < i; j++){
@@ -74,7 +74,7 @@ void Network::draw_node_connections(int* tmp, int i){
 	}
 }
 
-int Network::track_node_by_index_of_neighbor(int i){
+int Network::track_node_by_index_in_net(int i){
 	for (int j = 0; j < size; j++){
 		if( i >= l_seg[j] && i < l_seg[j] + k[j]) return j;
 	}
@@ -90,7 +90,6 @@ int Network::retrieve_link(int i, int j){
 	}
 	return 0;
 }
-
 
 
 int Network::push_node(int* tmp){
@@ -140,7 +139,7 @@ void Network::debug_print(){
 	}
 	std::cout<<std::endl;
 
-	std::cout<<"index 9 in net belongs to node nr "<<track_node_by_index_of_neighbor(9);
+	std::cout<<"index 9 in net belongs to node nr "<<track_node_by_index_in_net(9);
 	std::cout<<std::endl;
 
 }

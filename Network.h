@@ -24,7 +24,7 @@ private:
 	void draw_node_connections(int* tmp, int i);
 	int push_node(int* tmp);
 	int retrieve_link(int i, int j);
-	int track_node_by_index_of_neighbor(int i);
+	int track_node_by_index_in_net(int i);
 };
 
 #endif /* NETWORK_H_ */
