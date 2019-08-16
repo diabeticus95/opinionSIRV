@@ -9,6 +9,7 @@ public:
 	virtual ~Network();
 	void print_node(int i);
 	void print_all_nodes();
+	void debug_print();
 //	Network(const Network &other);
 //	Network(Network &&other);
 private:
@@ -20,9 +21,10 @@ private:
     std::mt19937_64 mt;
 	std::uniform_real_distribution<double> dist;
 
-	void draw_node_connections(int* tmp);
+	void draw_node_connections(int* tmp, int i);
 	int push_node(int* tmp);
-
+	int retrieve_link(int i, int j);
+	int track_node_by_index_of_neighbor(int i);
 };
 
 #endif /* NETWORK_H_ */
