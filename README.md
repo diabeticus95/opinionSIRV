@@ -5,4 +5,4 @@ Based on publication:
 *Epidemic spreading in multiplex networks influenced by opinion exchanges on vaccination*
 _Lucila G. Alvarez-Zuzek, Cristian E. La Rocca1, JoseÂ R. Iglesias, Lidia A. Braunstein_
 
-Simulation also available as R script implementation.
+Simulation also available as R script implementation with visualization and charts. Not suitable for large simulations.
