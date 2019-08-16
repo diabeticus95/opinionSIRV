@@ -14,7 +14,7 @@ public:
 //	Network(Network &&other);
 private:
 	int size;
-	std::vector<int> net;
+	int **net;
 	int* k;
 	int* l_seg;
 	double p;
