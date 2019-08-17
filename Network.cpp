@@ -8,9 +8,9 @@ Network::Network(int size, double p):size(size), p(p){
 	mt = std::mt19937_64(time(0));
 	dist = std::uniform_int_distribution<int>(0, size-1);
 	this->k = new int[size];
-	this->l_seg = new int[size];
 	this->n_of_links = p * size * (size-1) / 2;
-	zeruj(k, size); zeruj(l_seg, size);
+//	std::cout<<"n of links"<<n_of_links<<std::endl;
+	zeruj(k, size);
 	this->net = new std::unordered_set<int>[size];
 
 	draw_links();
@@ -20,7 +20,6 @@ Network::Network(int size, double p):size(size), p(p){
 
 Network::~Network() {
 	delete[] k;
-	delete[] l_seg;
 	for(int i = 0; i < size; i++){
 		net[i].clear();
 	}
@@ -30,7 +29,7 @@ Network::~Network() {
 void Network::draw_links(){
     std::pair<std::unordered_set<int>::iterator,bool> ret;
 	int rep_counter = 0;
-	for (int i = 0; i < n_of_links; i+=2){
+	for (int i = 0; i < n_of_links; i++){
 		while(!insert_link(ret)){
 			//std::cerr<<"repeating the draw"<<std::endl;
 			rep_counter++;
@@ -49,6 +48,8 @@ bool Network::insert_link(std::pair<std::unordered_set<int>::iterator,bool> ret)
 		net[tmp1].erase(tmp2);
 		return 0;
 	}
+	k[tmp1] += 1;
+	k[tmp2] += 1;
 	return 1;
 }
 
@@ -63,6 +64,15 @@ void Network::print_all_links(){
 	std::cout<<std::endl;
 }
 
+double Network::get_mean_k(){
+	bool debug = false;
+	int sum = 0;
+	for(int i = 0; i < size; i++){
+		sum += k[i];
+	}
+	if(debug) std::cout<<"suma wynosi: "<<sum<<std::endl;
+	return (double)sum/size;
+}
 
 
 		// dzielenie na segmenty

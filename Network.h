@@ -9,6 +9,8 @@ public:
 	Network(int size, double p);
 	virtual ~Network();
 	void print_all_links();
+	double get_mean_k();
+	void get_degree_distribution();
 
 
 
@@ -17,7 +19,6 @@ private:
 	int size;
 	std::unordered_set<int>* net;
 	int* k;
-	int* l_seg;
 	double p;
     std::mt19937_64 mt;
 	std::uniform_int_distribution<int> dist;

@@ -18,7 +18,9 @@ int main() {
 	Network* sirv = new Network(size, (double)4/size);
 	clock_t end = clock();
 	double time = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"uplynelo dokladnie "<<time;
+	std::cout<<"uplynelo dokladnie "<<time<<std::endl;;
+	//sirv->print_all_links();
+	std::cout<<"srednie k wynosi: "<<sirv->get_mean_k()<<std::endl;
 	return 0;
 }
 
