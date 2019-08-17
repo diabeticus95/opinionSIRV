@@ -10,7 +10,7 @@ public:
 	virtual ~Network();
 	void print_all_links();
 	double get_mean_k();
-	void get_degree_distribution();
+	void get_degree_distribution(int hist[]);
 
 
 

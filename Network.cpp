@@ -74,6 +74,13 @@ double Network::get_mean_k(){
 	return (double)sum/size;
 }
 
+void Network::get_degree_distribution(int hist[]){
+	int debug = 0;
+	for (int i = 0; i <size; i++){
+		hist[k[i]]++;
+	}
+	if(debug) std::cout<<hist[size-10]<<std::endl;
+}
 
 		// dzielenie na segmenty
 		// macierz wektorow

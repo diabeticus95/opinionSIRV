@@ -9,6 +9,7 @@
 #include <random>
 #include <ctime>
 #include "Network.h"
+#include "zerowanie.h"
 
 using namespace std;
 
@@ -19,8 +20,19 @@ int main() {
 	clock_t end = clock();
 	double time = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"uplynelo dokladnie "<<time<<std::endl;;
+
 	//sirv->print_all_links();
 	std::cout<<"srednie k wynosi: "<<sirv->get_mean_k()<<std::endl;
+
+	int hist[size];
+	zeruj(hist,size);
+	sirv->get_degree_distribution(hist);
+	FILE *fp = fopen("hist.csv", "w");
+	for (int i = 0; i < size; i++){
+		fprintf(fp, "%d,", hist[i]);
+	}
+	fclose(fp);
+
 	return 0;
 }
 
