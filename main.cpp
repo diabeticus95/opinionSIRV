@@ -13,10 +13,11 @@
 using namespace std;
 
 int main() {
-	Network* sirv = new Network(10, 0.5);
-	sirv->print_all_nodes();
-	std::cout<<std::endl<<std::endl;
-	sirv->debug_print();
+	clock_t begin = clock();
+	Network* sirv = new Network(100000, 0.5);
+	clock_t end = clock();
+	double time = double(end - begin)/CLOCKS_PER_SEC;
+	std::cout<<"uplynelo dokladnie "<<time;
 	return 0;
 }
 
