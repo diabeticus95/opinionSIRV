@@ -54,3 +54,8 @@ void zeruj(float *A, int N)
 	A[i] = 0.0;
 
 }
+
+void zeruj(bool* A, int N){
+    for(int i = 0; i < N; i++)
+    	A[i] = false;
+}
