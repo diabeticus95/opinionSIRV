@@ -16,7 +16,7 @@ using namespace std;
 
 int main() {
 	int size = 100000;
-	int p = (double)4/size;
+	double p = (double)4/size;
 
 	clock_t begin = clock();
 	Network* sirv = new Network(size, p);
@@ -31,13 +31,12 @@ int main() {
 	int sick_time[size], opinions[size];
 	bool angry[size];
 	char state[size];
-	zeruj(sick_time,size); zeruj(angry,size); init_state(state, size); init_opinions(opinions, size, mt);
+	zeruj(sick_time,size); zeruj(angry,size); init_opinions(opinions, size, mt); init_state(state, opinions, size);
 
-	std::cout<<"wektor stanow obok opini"<<std::endl;
-	for(int i = 0; i < size; i++){
-		std::cout<<state[i]<<" "<<opinions[i]<<std::endl;
-	}
 
+	/*for(int i = 0; i < size; i++){
+		std::cout<<opinions[i]<<"   "<<state[i]<<std::endl;
+	}*/
 
 
 	return 0;
