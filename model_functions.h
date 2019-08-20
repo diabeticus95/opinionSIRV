@@ -1,0 +1,6 @@
+#ifndef MODEL_FUNCTIONS_H_
+#define MODEL_FUNCTIONS_H_
+
+
+
+#endif /* MODEL_FUNCTIONS_H_ */

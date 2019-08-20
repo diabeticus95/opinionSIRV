@@ -82,8 +82,22 @@ void Network::get_degree_distribution(int hist[]){
 	if(debug) std::cout<<hist[size-10]<<std::endl;
 }
 
-		// dzielenie na segmenty
-		// macierz wektorow
+void Network::export_igraph_edgelist(char* filename){
+	int debug = 0;
+	FILE *fp = fopen(filename, "w");
+	for(int i = 0; i < size; i++){
+		for(auto j : net[i]){
+			fprintf(fp, "%d, %d\n", i, j);
+		}
+	}
+	fclose(fp);
+}
+
+std::unordered_set<int> Network::get_neighbors(int node){
+	return net[node];
+}
+
+
 
 
 

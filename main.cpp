@@ -17,21 +17,12 @@ int main() {
 	int size = 100000;
 	clock_t begin = clock();
 	Network* sirv = new Network(size, (double)4/size);
+	Network* opinion = new Network(size, (double)4/size);
 	clock_t end = clock();
 	double time = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"uplynelo dokladnie "<<time<<std::endl;;
+	std::cout<<"Tworzenie sieci ER trwa³o "<<time<<std::endl;;
 
-	//sirv->print_all_links();
-	std::cout<<"srednie k wynosi: "<<sirv->get_mean_k()<<std::endl;
 
-	int hist[size];
-	zeruj(hist,size);
-	sirv->get_degree_distribution(hist);
-	FILE *fp = fopen("hist.csv", "w");
-	for (int i = 0; i < size; i++){
-		fprintf(fp, "%d,", hist[i]);
-	}
-	fclose(fp);
 
 	return 0;
 }
