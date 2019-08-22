@@ -29,10 +29,9 @@ int main() {
 
 
 	begin = clock();
-	//int b, int w, Network sirv, Network opinions, int size
+	//int b, int w, Network sirv, Network opinion, int size
 
-	//Simulation sim(0.7, 0.9, sirv, opinion, size);
-	Simulation sim();
+	Simulation sim(0.7, 0.9, sirv, opinion, size);
 	return 1;
 /*
 	end = clock();

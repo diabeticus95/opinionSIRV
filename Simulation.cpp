@@ -5,20 +5,18 @@
 #include <random>
 #include <iostream>
 
-/*Simulation::Simulation(int b, int w, Network& sirv, Network& opinion, int size) : b(b), w(w), sirv(sirv), opinion(opinion), size(size){
-	/*mt = std::mt19937(time(0));
-	states = new char[size];
-	opinions = new int[size];
-	sick_time = new int[size];*/
+Simulation::Simulation(int b, int w, Network& sirv, Network& opinion, int size) : b(b), w(w), sirv(sirv), opinion(opinion), size(size){
+	//mt = std::mt19937(time(0));
+	//states = new char[size];
+	//opinions = new int[size];
+	//sick_time = new int[size];
 	//init_opinions(); init_states(); zeruj(sick_time, size);
-	//update_vaxxers();*
-Simulation::Simulation(){
-	std::cout<<"konstr";
+	//update_vaxxers()
 }
 
 Simulation::~Simulation() {
-	//delete[] states;
-	//delete[] opinions;
+/*	delete[] states;
+	delete[] opinions; */
 }
 
 void Simulation::init_states(){
@@ -78,3 +76,4 @@ void Simulation::print_groups(){
 	}
 	std::cout<<"koniec"<<std::endl;
 }
+

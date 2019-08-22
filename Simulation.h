@@ -9,8 +9,7 @@
 
 class Simulation {
 public:
-	Simulation(int b, int w, Network& sirv, Network& opinions, int size);
-	Simulation();
+	Simulation(int b, int w, Network& sirv, Network& opinion, int size);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void print_groups();
@@ -19,8 +18,8 @@ private:
 	int dying_period = 6;
 	int b; // bheta getting sick coefficient
 	int w; // omega vax efficiency coefficient
-	//Network sirv;
-	//Network opinion;
+	Network& sirv;
+	Network& opinion;
 	int size;
 	int* sick_time;
 	int* opinions;
