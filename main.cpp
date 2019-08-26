@@ -32,16 +32,15 @@ int main() {
 	//int b, int w, Network sirv, Network opinion, int size
 
 	Simulation sim(0.7, 0.9, sirv, opinion, size);
-	return 1;
-/*
+
 	end = clock();
 
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"init time "<<time_elapsed<<std::endl;
-	std::cout<<"feature arrays"<<std::endl;
-	sim.print_feature_arrays();
-	std::cout<<"groups"<<std::endl;
+	//std::cout<<"feature arrays"<<std::endl;
+	//sim.print_feature_arrays();
+	//std::cout<<"groups"<<std::endl;
 	//sim.print_groups();
-*/
+
 }
 

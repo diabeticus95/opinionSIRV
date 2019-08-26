@@ -1,0 +1,7 @@
+# wypróbowac wersje bez wektorow iterable, vaxxers, a za to z iterowaniem za kazdym razem po calych arrayach
+	## wtedy tez wyrzucic <algorithm>
+# sprobowac czêœc zamienic na unordered_sety z szybszym dostepem
+	
+	
+# moge trzymac wektor indeksow po ktorych nalezy iterowac sir (np. wszystkich S, albo wszystkich S i I),
+ i usuwac z niego elementy R poprzez index (begin + index)
