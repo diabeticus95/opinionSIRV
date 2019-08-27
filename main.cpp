@@ -31,7 +31,7 @@ int main() {
 	begin = clock();
 	//int b, int w, Network sirv, Network opinion, int size
 
-	Simulation sim(0.9, 0.9, sirv, opinion, size);
+	Simulation sim(0.9, 0.9, (double)10/11, (double)1/11, sirv, opinion, size);
 
 	end = clock();
 
@@ -47,10 +47,13 @@ int main() {
 
 
 	begin = clock();
-	for(int i = 0; i < 50; i++) sim.iterate_sirv();
+	for(int i = 0; i < 10; i++){
+		sim.iterate_sirv();
+		sim.iterate_opinion();
+	}
 	end = clock();
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"only sir iters "<<time_elapsed<<std::endl;
+	std::cout<<"both iters "<<time_elapsed<<std::endl;
 
 	sim.print_state_counts();
 	sim.print_opinion_counts();

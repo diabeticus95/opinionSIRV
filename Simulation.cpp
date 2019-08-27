@@ -6,9 +6,10 @@
 #include <iostream>
 #include <algorithm>
 
-Simulation::Simulation(double b, double w, Network& sirv, Network& opinion, int size) : b(b), w(w), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) : b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+	r = p/q;
 	mt = std::mt19937(time(0));
-	infection_dist = std::uniform_real_distribution<double>(0,1);
+	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
 	sick_time = new int[size];
@@ -73,6 +74,7 @@ void Simulation::infection_trial(int i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
+			vaxxers.erase(std::remove(vaxxers.begin(), vaxxers.end(), i), vaxxers.end()); //usuniecie z vaxxerow chorujacego wezla
 		}
 	}
 	else{
@@ -81,6 +83,28 @@ void Simulation::infection_trial(int i){
 	}
 }
 
+bool Simulation::can_interact(int agent_opinion, int neighbor_index){
+	int opinion_j = opinions[neighbor_index];
+	if(agent_opinion == -2 && opinion_j == -2) return false;
+	else return true;
+}
+
+void Simulation::interact(int agent_index, int agent_opinion, int neighbor_opinion){
+	double trigger = infection_dist(mt);
+
+    if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
+      opinions[agent_index] = agent_opinion + 1;
+      if(states[agent_index] == 'S') vaxxers.push_back(agent_index);
+    } else if (agent_opinion == -1 && neighbor_opinion < 0 && trigger < p){
+    	opinions[agent_index] = agent_opinion - 1;
+    } else if (agent_opinion == 1 && neighbor_opinion < 0 && trigger < q){
+    	opinions[agent_index] = agent_opinion - 2;
+    } else if (agent_opinion == -1 && neighbor_opinion > 0 && trigger < q){
+    	opinions[agent_index]= agent_opinion + 2;
+    } else if (agent_opinion == -2 && neighbor_opinion > 0 && trigger < q){
+    	opinions[agent_index] = agent_opinion + 1;
+    }
+}
 
 void Simulation::iterate_sirv(){
 // kill off agents sick for dying period
@@ -110,7 +134,27 @@ void Simulation::iterate_sirv(){
 }
 
 void Simulation::iterate_opinion(){
-
+	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
+	//This neighbor is chosen among those who can change the individual opinion.
+	std::vector<int> interactive_neighbors;
+	int interaction_neighbor_opinion = 0;
+	for(int i = 0; i < size; i++){
+		int agent_opinion = opinions[i];
+		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		for(auto n : opinion.get_neighbors(i)){
+			if(can_interact(agent_opinion, n))
+				interactive_neighbors.push_back(n);
+		}
+		if(interactive_neighbors.size() == 0) continue;
+		else if( interactive_neighbors.size() == 1)
+			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
+		else if(interactive_neighbors.size() > 1){
+			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
+			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
+			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
+		}
+		interact(i, agent_opinion, interaction_neighbor_opinion);
+	}
 }
 
 void Simulation::print_feature_arrays(){
@@ -144,7 +188,26 @@ void Simulation::print_opinion_counts(){
 			else if(opinions[i] == 1) opinion_counts[2]++;
 			else if(opinions[i] == 2) opinion_counts[3]++;
 	}
-	std::cout<<"-2 = "<<opinion_counts[0]<<", -1 = "<<opinion_counts[1]<<", 0 = "<<opinion_counts[2]<<", 1 = "<<opinion_counts[3]<<std::endl;
-
+	std::cout<<"-2 = "<<opinion_counts[0]<<", -1 = "<<opinion_counts[1]<<", 1 = "<<opinion_counts[2]<<", 2 = "<<opinion_counts[3]<<std::endl;
 }
 
+void Simulation::print_for_charts(char* filename){
+	FILE* fp = fopen(filename, "a");
+//	fprintf(fp, "%d %d\n", i, j);
+	int opinion_counts[4];
+	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
+	int I = 0; int S = 0; int R = 0; int V = 0;
+
+	for(int i = 0; i < size; i++){
+		if(opinions[i] == -2) opinion_counts[0]++;
+			else if(opinions[i] == -1) opinion_counts[1]++;
+			else if(opinions[i] == 1) opinion_counts[2]++;
+			else if(opinions[i] == 2) opinion_counts[3]++;
+		if(states[i] == 'S') S++;
+			else if(states[i] == 'I') I++;
+			else if(states[i] == 'R') R++;
+			else if(states[i] == 'V') V++;
+	}
+
+
+}
