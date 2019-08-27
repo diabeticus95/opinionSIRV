@@ -26,7 +26,6 @@ private:
 	int* opinions;
 	char* states;
 	std::vector<int> vaxxers;
-	std::vector<int> iterable_sir_indexes; //zjebany pomysl
 
 	void init_states();
 	void init_opinions();
@@ -34,6 +33,7 @@ private:
 	void vaccinate();
 	void iterate_sirv();
 	void die(int i);
+	void get_sick(int i);
 	void infection_trial(int i);
 
 };

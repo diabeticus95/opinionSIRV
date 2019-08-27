@@ -13,7 +13,7 @@ Simulation::Simulation(int b, int w, Network& sirv, Network& opinion, int size) 
 	opinions = new int[size];
 	sick_time = new int[size];
 	init_opinions(); init_states(); zeruj(sick_time, size);
-	update_vaxxers(); //also iterable_sir_indexes
+	update_vaxxers();
 }
 
 Simulation::~Simulation() {
@@ -46,7 +46,6 @@ void Simulation::update_vaxxers(){
 		if(opinions[i] == 2){
 			vaxxers.push_back(i);
 		}
-		iterable_sir_indexes.push_back(i);
 	}
 }
 
@@ -58,15 +57,19 @@ void Simulation::vaccinate(){
 
 void Simulation::die(int i){
 	states[i] = 'R';
-	iterable_sir_indexes.erase(iterable_sir_indexes.begin() + i);
 }
+
+void Simulation::get_sick(int i){
+	states[i] = 'I';
+}
+
 void Simulation::infection_trial(int i){
 	double rnd = infection_dist(mt);
 	if(states[i] == 'S'){
-		if(rnd < b) states[i] = 'I';
+		if(rnd < b) get_sick(i);
 	}
 	else if(states[i] == 'V'){
-		if(rnd <(1-w)*b) states[i] = 'I';
+		if(rnd <(1-w)*b) get_sick(i);
 	}
 	else{
 		std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
@@ -77,7 +80,7 @@ void Simulation::infection_trial(int i){
 
 void Simulation::iterate_sirv(){
 // kill off agents sick for dying period
-	for(auto i : iterable_sir_indexes){
+	for(int i = 0; i < size; i++){
 		if(states[i] == 'I'){
 			sick_time[i]++;
 			if(sick_time[i] == dying_period){
@@ -88,7 +91,7 @@ void Simulation::iterate_sirv(){
 // vaccinate all the agents with opinion +2
 	vaccinate(); // remember to push to vaxxers on opinion iteration
 // epidemy trial
-	for(auto i : iterable_sir_indexes){
+	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
 			for(auto s : sirv.get_neighbors(i)){
