@@ -2,4 +2,4 @@
 	## wtedy tez wyrzucic <algorithm>
 # sprobowac czêœc zamienic na unordered_sety z szybszym dostepem
 	
-	
+# w petli sir, zamiast if (S||V) then infect_trial, moge if (I) get_neighbors -> if(S || V) infect_trial

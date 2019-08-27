@@ -9,16 +9,21 @@
 
 class Simulation {
 public:
-	Simulation(int b, int w, Network& sirv, Network& opinion, int size);
+	Simulation(double b, double w, Network& sirv, Network& opinion, int size);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void print_groups();
+	void iterate_sirv();
+	void iterate_opinion();
+	void print_state_counts();
+	void print_opinion_counts();
+
 private:
     std::mt19937 mt;
 	std::uniform_real_distribution<double> infection_dist;
 	int dying_period = 6;
-	int b; // bheta getting sick coefficient
-	int w; // omega vax efficiency coefficient
+	double b; // bheta getting sick coefficient
+	double w; // omega vax efficiency coefficient
 	Network& sirv;
 	Network& opinion;
 	int size;
@@ -31,7 +36,6 @@ private:
 	void init_opinions();
 	void update_vaxxers();
 	void vaccinate();
-	void iterate_sirv();
 	void die(int i);
 	void get_sick(int i);
 	void infection_trial(int i);

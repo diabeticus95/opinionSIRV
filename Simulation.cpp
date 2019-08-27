@@ -6,7 +6,7 @@
 #include <iostream>
 #include <algorithm>
 
-Simulation::Simulation(int b, int w, Network& sirv, Network& opinion, int size) : b(b), w(w), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, Network& sirv, Network& opinion, int size) : b(b), w(w), sirv(sirv), opinion(opinion), size(size){
 	mt = std::mt19937(time(0));
 	infection_dist = std::uniform_real_distribution<double>(0,1);
 	states = new char[size];
@@ -14,6 +14,7 @@ Simulation::Simulation(int b, int w, Network& sirv, Network& opinion, int size) 
 	sick_time = new int[size];
 	init_opinions(); init_states(); zeruj(sick_time, size);
 	update_vaxxers();
+	vaccinate();
 }
 
 Simulation::~Simulation() {
@@ -69,7 +70,10 @@ void Simulation::infection_trial(int i){
 		if(rnd < b) get_sick(i);
 	}
 	else if(states[i] == 'V'){
-		if(rnd <(1-w)*b) get_sick(i);
+		if(rnd <(1-w)*b){
+			get_sick(i);
+			opinions[i] = -2;
+		}
 	}
 	else{
 		std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
@@ -105,6 +109,10 @@ void Simulation::iterate_sirv(){
 	}
 }
 
+void Simulation::iterate_opinion(){
+
+}
+
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){
 		std::cout<<opinions[i]<<"   "<<states[i]<<std::endl;
@@ -116,5 +124,27 @@ void Simulation::print_groups(){
 		std::cout<<i<<std::endl;
 	}
 	std::cout<<"koniec"<<std::endl;
+}
+void Simulation::print_state_counts(){
+	int I = 0; int S = 0; int R = 0; int V = 0;
+	for(int i = 0; i < size; i++){
+		if(states[i] == 'S') S++;
+			else if(states[i] == 'I') I++;
+			else if(states[i] == 'R') R++;
+			else if(states[i] == 'V') V++;
+	}
+	std::cout<<"S = "<<S<<", I = "<<I<<", R = "<<R<<", V = "<<V<<std::endl;
+}
+void Simulation::print_opinion_counts(){
+	int opinion_counts[4];
+	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
+	for(int i = 0; i < size; i++){
+		if(opinions[i] == -2) opinion_counts[0]++;
+			else if(opinions[i] == -1) opinion_counts[1]++;
+			else if(opinions[i] == 1) opinion_counts[2]++;
+			else if(opinions[i] == 2) opinion_counts[3]++;
+	}
+	std::cout<<"-2 = "<<opinion_counts[0]<<", -1 = "<<opinion_counts[1]<<", 0 = "<<opinion_counts[2]<<", 1 = "<<opinion_counts[3]<<std::endl;
+
 }
 
