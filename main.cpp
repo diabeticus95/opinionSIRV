@@ -37,13 +37,19 @@ int main() {
 
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"init time "<<time_elapsed<<std::endl;
-	//std::cout<<"feature arrays"<<std::endl;
-	//sim.print_feature_arrays();
-	//std::cout<<"groups"<<std::endl;
-	//sim.print_groups();
 
-	//sim.print_state_counts();
-	//sim.print_opinion_counts();
+	/*Simulation sim(0.1, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
+	std::cout<<"feature arrays"<<std::endl;
+	sim.print_feature_arrays();
+
+
+	sim.print_state_counts();
+	sim.print_opinion_counts();
+	sim.iterate_sirv();
+	sim.iterate_opinion();
+	sim.print_state_counts();
+	sim.print_opinion_counts();*/
+
 	begin = clock();
 
 
