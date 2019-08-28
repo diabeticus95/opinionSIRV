@@ -35,9 +35,6 @@ int main() {
 
 	//end = clock();
 
-	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"init time "<<time_elapsed<<std::endl;
-
 	/*Simulation sim(0.1, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
 	std::cout<<"feature arrays"<<std::endl;
 	sim.print_feature_arrays();
@@ -53,18 +50,26 @@ int main() {
 	begin = clock();
 
 
-	for (int i = 0; i < 10; i++){
+	/*for (int i = 0; i < 10; i++){
 		Simulation sim(0.1, (double)i/10, (double)10/11, (double)1/11, sirv, opinion, size);
 		int days = sim.iterate_until_end_of_epidemy();
 		std::string filename("test.csv");
 		if(i == 0) sim.print_for_charts(filename, true, days);
 		else sim.print_for_charts(filename, false, days);
-	}
+	}*/
+	Simulation sim(0.9, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
+	sim.iterate_until_end_of_epidemy();
+	/*for(int i = 0; i < 50; i++){
+		sim.iterate_sirv();
+		sim.iterate_opinion();
+		if(i == 0) sim.print_for_charts("test_sirv.csv", true);
+		else sim.print_for_charts("test_sirv.csv", false);
+	}*/
 
 	end = clock();
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
-
+	return 0;
 
 
 }

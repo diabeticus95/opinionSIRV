@@ -12,9 +12,14 @@ Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Ne
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
+	states_tmp = new char[size];
+	opinions_tmp = new int[size];
 	sick_time = new int[size];
 	init_states(); init_opinions(); zeruj(sick_time, size);
-
+	for(int i = 0; i < size; i++){
+		opinions_tmp[i] = opinions[i];
+		states_tmp[i] = states[i];
+	}
 }
 
 Simulation::~Simulation() {
@@ -53,7 +58,7 @@ void Simulation::die(int i){
 }
 
 void Simulation::get_sick(int i){
-	states[i] = 'I';
+	states_tmp[i] = 'I';
 }
 
 void Simulation::infection_trial(int i){
@@ -83,16 +88,16 @@ void Simulation::interact(int agent_index, int agent_opinion, int neighbor_opini
 	double trigger = infection_dist(mt);
 
     if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
-      opinions[agent_index] = agent_opinion + 1;
+      opinions_tmp[agent_index] = agent_opinion + 1;
       vaccinate(agent_index);
     } else if (agent_opinion == -1 && neighbor_opinion < 0 && trigger < p){
-    	opinions[agent_index] = agent_opinion - 1;
+    	opinions_tmp[agent_index] = agent_opinion - 1;
     } else if (agent_opinion == 1 && neighbor_opinion < 0 && trigger < q){
-    	opinions[agent_index] = agent_opinion - 2;
+    	opinions_tmp[agent_index] = agent_opinion - 2;
     } else if (agent_opinion == -1 && neighbor_opinion > 0 && trigger < q){
-    	opinions[agent_index]= agent_opinion + 2;
+    	opinions_tmp[agent_index]= agent_opinion + 2;
     } else if (agent_opinion == -2 && neighbor_opinion > 0 && trigger < q){
-    	opinions[agent_index] = agent_opinion + 1;
+    	opinions_tmp[agent_index] = agent_opinion + 1;
     }
 }
 
@@ -119,6 +124,9 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
+	for(int i = 0; i > size; i++){
+		states[i] = states_tmp[i];
+	}
 }
 
 void Simulation::iterate_opinion(){
@@ -142,6 +150,9 @@ void Simulation::iterate_opinion(){
 			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
+	}
+	for(int i = 0; i < size; i++){
+		opinions[i] = opinions_tmp[i];
 	}
 }
 int Simulation::iterate_until_end_of_epidemy(){
@@ -189,8 +200,12 @@ void Simulation::print_opinion_counts(){
 }
 
 void Simulation::print_for_charts(std::string filename, bool first_run){
-	FILE* fp = fopen(filename.c_str(), "a");
-	if(first_run) fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2");
+	FILE* fp;
+	if(first_run){
+		fp = fopen(filename.c_str(), "w");
+		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2");
+	}
+	else fp = fopen(filename.c_str(), "a");
 	int opinion_counts[4];
 	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
 	int I = 0; int S = 0; int R = 0; int V = 0;

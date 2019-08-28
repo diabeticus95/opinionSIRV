@@ -35,7 +35,9 @@ private:
 	int size;
 	int* sick_time;
 	int* opinions;
+	int* opinions_tmp;
 	char* states;
+	char* states_tmp;
 
 	void init_states();
 	void init_opinions();
