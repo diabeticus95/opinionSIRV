@@ -171,6 +171,14 @@ int Simulation::get_sick_number(){
 	return I;
 }
 
+int Simulation::get_recovered_number(){ //for cutoff
+	int R = 0;
+	for (int i = 0; i < size; i++){
+		if(states[i] == 'R') R++;
+	}
+	return R;
+}
+
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){
 		std::cout<<opinions[i]<<"   "<<states[i]<<std::endl;
@@ -226,7 +234,7 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int days
 	FILE *fp;
 	if(first_run){
 		fp = fopen(filename.c_str(), "w");
-		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w");
+		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w", "b");
 	}
 	else fp = fopen(filename.c_str(), "a");
 
@@ -244,5 +252,5 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int days
 			else if(states[i] == 'R') R++;
 			else if(states[i] == 'V') V++;
 	}
-	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, w);
+	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, w, b);
 }

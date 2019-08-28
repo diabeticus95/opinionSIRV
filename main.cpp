@@ -19,6 +19,7 @@ int main() {
 
 	int size = 100000;
 	double p = (double)4/size;
+	int cutoff = 200;
 
 	clock_t begin = clock();
 	Network sirv(size, p);
@@ -50,15 +51,21 @@ int main() {
 	begin = clock();
 
 
-	/*for (int i = 0; i < 10; i++){
-		Simulation sim(0.1, (double)i/10, (double)10/11, (double)1/11, sirv, opinion, size);
-		int days = sim.iterate_until_end_of_epidemy();
-		std::string filename("test.csv");
-		if(i == 0) sim.print_for_charts(filename, true, days);
-		else sim.print_for_charts(filename, false, days);
-	}*/
-	Simulation sim(0.9, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
-	sim.iterate_until_end_of_epidemy();
+	for (int w = 0; w < 10; w++){
+		for (int b = 0; b < 5; b++){
+			double b_c = 0.1;
+			if(b == 1) b_c = 0.2
+			else if(b == 2) b_c = 0.4;
+			else if(b == 3) b_c = 0.6;
+			else if(b == 4) b_c = 0.8;
+			Simulation sim(b_c, (double)w/10, (double)10/11, (double)1/11, sirv, opinion, size);
+			int days = sim.iterate_until_end_of_epidemy();
+			std::string filename("test.csv");
+			if(w == 0 && b == 0) sim.print_for_charts(filename, true, days);
+			else sim.print_for_charts(filename, false, days);
+		}
+	}
+
 	/*for(int i = 0; i < 50; i++){
 		sim.iterate_sirv();
 		sim.iterate_opinion();

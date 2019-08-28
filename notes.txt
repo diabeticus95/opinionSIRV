@@ -5,5 +5,3 @@
 # w petli sir, zamiast if (S||V) then infect_trial, moge if (I) get_neighbors -> if(S || V) infect_trial
 
 # zamiast tworzyc dist za kazdym razem moge stworzyc z palca 20 i tylko powyzej uzywac
-
-#add synchronous update. Possibly by vectors of each state/op, erasable every iteration? or by arrays copy
