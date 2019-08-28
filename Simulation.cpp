@@ -13,9 +13,8 @@ Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Ne
 	states = new char[size];
 	opinions = new int[size];
 	sick_time = new int[size];
-	init_opinions(); init_states(); zeruj(sick_time, size);
-	update_vaxxers();
-	vaccinate();
+	init_states(); init_opinions(); zeruj(sick_time, size);
+
 }
 
 Simulation::~Simulation() {
@@ -28,8 +27,6 @@ void Simulation::init_states(){
 	for (int i = 1; i < size; i++){
 		states[i] = 'S';
 	}
-	vaccinate();
-
 }
 
 void Simulation::init_opinions(){
@@ -39,22 +36,16 @@ void Simulation::init_opinions(){
     	if(rnd == 0) opinions[i] = -2;
     	else if(rnd == 1) opinions[i] = -1;
     	else if(rnd == 2) opinions[i] = 1;
-    	else if(rnd == 3) opinions[i] = 2;
+    	else if(rnd == 3){
+    		opinions[i] = 2;
+    		vaccinate(i);
+    	}
     }
 }
 
-void Simulation::update_vaxxers(){
-	for(int i = 0; i < size; i++){
-		if(opinions[i] == 2){
-			vaxxers.push_back(i);
-		}
-	}
-}
 
-void Simulation::vaccinate(){
-	for (auto i : vaxxers){
-			if(states[i] == 'S') states[i] = 'V';
-		}
+void Simulation::vaccinate(int i){
+	if(states[i] == 'S') states[i] = 'V';
 }
 
 void Simulation::die(int i){
@@ -74,7 +65,6 @@ void Simulation::infection_trial(int i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
-			vaxxers.erase(std::remove(vaxxers.begin(), vaxxers.end(), i), vaxxers.end()); //usuniecie z vaxxerow chorujacego wezla
 		}
 	}
 	else{
@@ -94,7 +84,7 @@ void Simulation::interact(int agent_index, int agent_opinion, int neighbor_opini
 
     if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
       opinions[agent_index] = agent_opinion + 1;
-      if(states[agent_index] == 'S') vaxxers.push_back(agent_index);
+      vaccinate(agent_index);
     } else if (agent_opinion == -1 && neighbor_opinion < 0 && trigger < p){
     	opinions[agent_index] = agent_opinion - 1;
     } else if (agent_opinion == 1 && neighbor_opinion < 0 && trigger < q){
@@ -116,8 +106,6 @@ void Simulation::iterate_sirv(){
 			}
 		}
 	}
-// vaccinate all the agents with opinion +2
-	vaccinate(); // remember to push to vaxxers on opinion iteration
 // epidemy trial
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
@@ -177,13 +165,7 @@ void Simulation::print_feature_arrays(){
 		std::cout<<opinions[i]<<"   "<<states[i]<<std::endl;
 	}
 }
-void Simulation::print_groups(){
-	std::cout<<"wszedlem"<<std::endl;
-	for(auto i : vaxxers){
-		std::cout<<i<<std::endl;
-	}
-	std::cout<<"koniec"<<std::endl;
-}
+
 void Simulation::print_state_counts(){
 	int I = 0; int S = 0; int R = 0; int V = 0;
 	for(int i = 0; i < size; i++){
@@ -226,8 +208,13 @@ void Simulation::print_for_charts(std::string filename, bool first_run){
 	fprintf(fp, "%d,%d,%d,%d,%d,%d,%d,%d\n", S,I,R,V,opinion_counts[0], opinion_counts[1], opinion_counts[2], opinion_counts[3]);
 }
 void Simulation::print_for_charts(std::string filename, bool first_run, int days){
-	FILE* fp = fopen(filename.c_str(), "a");
-	if(first_run) fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w");
+	FILE *fp;
+	if(first_run){
+		fp = fopen(filename.c_str(), "w");
+		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w");
+	}
+	else fp = fopen(filename.c_str(), "a");
+
 	int opinion_counts[4];
 	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
 	int I = 0; int S = 0; int R = 0; int V = 0;

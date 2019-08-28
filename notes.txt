@@ -1,5 +1,7 @@
-# wypróbowac wersje bez wektorow iterable, vaxxers, a za to z iterowaniem za kazdym razem po calych arrayach
+# wypróbowac wersje bez wektorow iterable, vaxxers, a za to z iterowaniem za kazdym razem po calych arrayach  //518 vs 72s
 	## wtedy tez wyrzucic <algorithm>
 # sprobowac czêœc zamienic na unordered_sety z szybszym dostepem
 	
 # w petli sir, zamiast if (S||V) then infect_trial, moge if (I) get_neighbors -> if(S || V) infect_trial
+
+# zamiast tworzyc dist za kazdym razem moge stworzyc z palca 20 i tylko powyzej uzywac

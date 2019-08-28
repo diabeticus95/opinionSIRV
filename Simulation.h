@@ -12,7 +12,6 @@ public:
 	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size);
 	virtual ~Simulation();
 	void print_feature_arrays();
-	void print_groups();
 	void iterate_sirv();
 	void iterate_opinion();
 	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
@@ -37,12 +36,10 @@ private:
 	int* sick_time;
 	int* opinions;
 	char* states;
-	std::vector<int> vaxxers;
 
 	void init_states();
 	void init_opinions();
-	void update_vaxxers();
-	void vaccinate();
+	void vaccinate(int i);
 	void die(int i);
 	void get_sick(int i);
 	void infection_trial(int i);
