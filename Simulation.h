@@ -19,7 +19,7 @@ public:
 	void print_state_counts();
 	void print_opinion_counts();
 	void print_for_charts(std::string filename, bool first_run);
-	void print_for_charts(std::string filename, int days);
+	void print_for_charts(std::string filename, bool first_run, int days);
 
 
 private:

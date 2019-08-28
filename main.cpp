@@ -46,11 +46,13 @@ int main() {
 	//sim.print_opinion_counts();
 	begin = clock();
 
+
 	for (int i = 0; i < 10; i++){
-		Simulation sim(0.1, i, (double)10/11, (double)1/11, sirv, opinion, size);
+		Simulation sim(0.1, (double)i/10, (double)10/11, (double)1/11, sirv, opinion, size);
 		int days = sim.iterate_until_end_of_epidemy();
-		std::string filename("test" + to_string(i) + ".csv");
-		sim.print_for_charts(filename, days);
+		std::string filename("test.csv");
+		if(i == 0) sim.print_for_charts(filename, true, days);
+		else sim.print_for_charts(filename, false, days);
 	}
 
 	end = clock();

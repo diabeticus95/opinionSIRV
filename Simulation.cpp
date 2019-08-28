@@ -225,9 +225,9 @@ void Simulation::print_for_charts(std::string filename, bool first_run){
 	}
 	fprintf(fp, "%d,%d,%d,%d,%d,%d,%d,%d\n", S,I,R,V,opinion_counts[0], opinion_counts[1], opinion_counts[2], opinion_counts[3]);
 }
-void Simulation::print_for_charts(std::string filename, int days){
-	FILE* fp = fopen(filename.c_str(), "w");
-	fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days");
+void Simulation::print_for_charts(std::string filename, bool first_run, int days){
+	FILE* fp = fopen(filename.c_str(), "a");
+	if(first_run) fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w");
 	int opinion_counts[4];
 	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
 	int I = 0; int S = 0; int R = 0; int V = 0;
