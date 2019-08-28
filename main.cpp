@@ -11,6 +11,7 @@
 #include "Network.h"
 #include "zerowanie.h"
 #include "Simulation.h"
+#include "string"
 
 using namespace std;
 
@@ -28,12 +29,11 @@ int main() {
 
 
 
-	begin = clock();
+	//begin = clock();
 	//int b, int w, Network sirv, Network opinion, int size
 
-	Simulation sim(0.9, 0.9, (double)10/11, (double)1/11, sirv, opinion, size);
 
-	end = clock();
+	//end = clock();
 
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"init time "<<time_elapsed<<std::endl;
@@ -42,21 +42,21 @@ int main() {
 	//std::cout<<"groups"<<std::endl;
 	//sim.print_groups();
 
-	sim.print_state_counts();
-	sim.print_opinion_counts();
-
-
+	//sim.print_state_counts();
+	//sim.print_opinion_counts();
 	begin = clock();
-	for(int i = 0; i < 10; i++){
-		sim.iterate_sirv();
-		sim.iterate_opinion();
+
+	for (int i = 0; i < 10; i++){
+		Simulation sim(0.1, i, (double)10/11, (double)1/11, sirv, opinion, size);
+		int days = sim.iterate_until_end_of_epidemy();
+		std::string filename("test" + to_string(i) + ".csv");
+		sim.print_for_charts(filename, days);
 	}
+
 	end = clock();
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
 
-	sim.print_state_counts();
-	sim.print_opinion_counts();
 
 
 }

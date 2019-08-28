@@ -15,9 +15,12 @@ public:
 	void print_groups();
 	void iterate_sirv();
 	void iterate_opinion();
+	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
 	void print_state_counts();
 	void print_opinion_counts();
-	void print_for_charts(char* filename);
+	void print_for_charts(std::string filename, bool first_run);
+	void print_for_charts(std::string filename, int days);
+
 
 private:
     std::mt19937 mt;
@@ -45,6 +48,7 @@ private:
 	void infection_trial(int i);
 	bool can_interact(int agent_opinion, int neighbor_index);
 	void interact(int agent_index, int agent_opinion, int neighbor_opinion);
+	int get_sick_number();
 
 };
 
