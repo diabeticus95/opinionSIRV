@@ -53,16 +53,32 @@ int main() {
 
 	for (int w = 0; w < 10; w++){
 		for (int b = 0; b < 5; b++){
+			clock_t iter_begin = clock();
 			double b_c = 0.1;
-			if(b == 1) b_c = 0.2
+			if (b == 1) b_c = 0.2;
 			else if(b == 2) b_c = 0.4;
 			else if(b == 3) b_c = 0.6;
 			else if(b == 4) b_c = 0.8;
-			Simulation sim(b_c, (double)w/10, (double)10/11, (double)1/11, sirv, opinion, size);
-			int days = sim.iterate_until_end_of_epidemy();
-			std::string filename("test.csv");
-			if(w == 0 && b == 0) sim.print_for_charts(filename, true, days);
-			else sim.print_for_charts(filename, false, days);
+			Simulation* sim;
+			int counter = 0;
+			do {
+				if (counter > 0) delete sim;
+				sim = new Simulation(b_c, (double)w / 10, (double)10 / 11, (double)1 / 11, sirv, opinion, size);
+				sim->iterate_until_end_of_epidemy();
+				counter++;
+				std::cout << "repeating..." << std::endl;
+				std::cout << sim->get_recovered_number() << std::endl;
+			}
+			while (sim->get_recovered_number() <= cutoff);
+			int days = sim->iterate_until_end_of_epidemy();
+			
+			std::string filename("chart1.csv");
+			if(w == 0 && b == 0) sim->print_for_charts(filename, true, days);
+			else sim->print_for_charts(filename, false, days);
+			delete sim;
+			clock_t iter_end = clock();
+			std::cout << "iteration no. " << w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
+			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 		}
 	}
 
@@ -76,8 +92,8 @@ int main() {
 	end = clock();
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
+	getchar();
 	return 0;
-
 
 }
 

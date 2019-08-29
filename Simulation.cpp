@@ -127,7 +127,7 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
-	for(int i = 0; i > size; i++){
+	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
 }
@@ -238,7 +238,7 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int days
 	FILE *fp;
 	if(first_run){
 		fp = fopen(filename.c_str(), "w");
-		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%s\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", "w", "b");
+		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%c,%c\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", 'w', 'b');
 	}
 	else fp = fopen(filename.c_str(), "a");
 
