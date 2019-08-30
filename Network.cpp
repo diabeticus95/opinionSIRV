@@ -4,9 +4,11 @@
 #include <iostream>
 #include <unordered_set>
 
-Network::Network(int size, double p):size(size), p(p){
-	mt = std::mt19937_64(time(0));
-	dist = std::uniform_int_distribution<int>(0, size-1);
+Network::Network(int size, double p) :
+										size(size),
+										p(p),
+										mt(std::mt19937_64(time(0))),
+										dist(std::uniform_int_distribution<int>(0, size-1)){
 	this->k = new int[size];
 	this->n_of_links = p * size * (size-1) / 2;
 //	std::cout<<"n of links"<<n_of_links<<std::endl;

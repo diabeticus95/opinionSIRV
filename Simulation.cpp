@@ -5,11 +5,22 @@
 #include <random>
 #include <iostream>
 #include <algorithm>
+#include <ctime>
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) : b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
+								b(b),
+								w(w),
+								p(p),
+								q(q),
+								sirv(sirv),
+								opinion(opinion),
+								size(size),
+								mt(std::mt19937(time(0))){
 	r = p/q;
-	mt = std::mt19937(time(0));
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
+	for(int i = 0; i < 18; i++){
+		 neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
+	}
 	states = new char[size];
 	opinions = new int[size];
 	states_tmp = new char[size];
@@ -122,14 +133,9 @@ void Simulation::iterate_sirv(){
 // epidemy trial
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
-			bool sick_neighbor = 0;
-			for(auto s : sirv.get_neighbors(i)){
-				if(states[s] == 'I'){
-					sick_neighbor = true;
-					if(debug) std::cout<<"sick neighbor for node "<<i<<std::endl;
-					break;
-				}
-			}
+			bool sick_neighbor = std::any_of(sirv.get_neighbors(i).begin(), sirv.get_neighbors(i).end(), [this](const int &neighbor){
+				return states[neighbor] == 'I';
+			});
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
@@ -161,9 +167,15 @@ void Simulation::iterate_opinion(){
 		else if( interactive_neighbors.size() == 1)
 			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
 		else if(interactive_neighbors.size() > 1){
-			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
-			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
-			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
+			if(interactive_neighbors.size() < 20){
+				int random_index = neighbor_dist[interactive_neighbors.size() - 2](mt);
+				if(debug) std::cout<<"random index: "<<random_index<<std::endl;
+				interaction_neighbor_opinion = opinions[interactive_neighbors[random_index]];
+			}
+			else{
+				std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
+				interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
+			}
 			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
