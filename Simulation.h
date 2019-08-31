@@ -23,8 +23,8 @@ public:
 
 
 private:
+    std::mt19937 mt;
 	std::uniform_real_distribution<double> infection_dist;
-	std::uniform_int_distribution<int> neighbor_dist[18];
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
 	double w; // omega vax efficiency coefficient
@@ -34,7 +34,6 @@ private:
 	Network& sirv;
 	Network& opinion;
 	int size;
-    std::mt19937 mt;
 	int* sick_time;
 	int* opinions;
 	int* opinions_tmp;
