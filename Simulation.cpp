@@ -123,13 +123,7 @@ void Simulation::iterate_sirv(){
 	}
 // epidemy trial
 	clock_t begin = clock();
-	std::unordered_set<int> trial_volunteers;
 	for(int i = 0; i < size; i++){
-
-		/*if(states[i] == 'I'){
-			for(auto &neighbor : sirv.get_neighbors(i))
-		}
-		*/
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
 			for(auto s : sirv.get_neighbors(i)){
