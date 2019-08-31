@@ -12,7 +12,7 @@ public:
 	double get_mean_k();
 	void get_degree_distribution(int hist[]);
 	void export_igraph_edgelist(char* filename);
-	std::unordered_set<int> get_neighbors(int node); //returns size of neighborsArray
+	std::unordered_set<int>& get_neighbors(int node); //returns size of neighborsArray
 
 
 
