@@ -5,6 +5,7 @@
 #include <random>
 #include <iostream>
 #include <algorithm>
+#include <ctime>
 
 Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) : b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
@@ -120,6 +121,7 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
+	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -133,6 +135,8 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
+	clock_t end = clock();
+	iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -182,6 +186,12 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
+	double avg_iter = 0;
+	for(auto &time : iter_time){
+		avg_iter += time;
+	}
+	avg_iter /= iter_time.size();
+	std::cout<<"avg_iter = "<<avg_iter<<std::endl;
 	return i;
 }
 int Simulation::get_sick_number(){

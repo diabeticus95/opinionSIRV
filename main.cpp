@@ -50,7 +50,7 @@ int main() {
 
 	begin = clock();
 
-
+/*
 	for (int w = 0; w < 3; w++){
 		for (int b = 0; b < 5; b++){
 			clock_t iter_begin = clock();
@@ -83,8 +83,9 @@ int main() {
 			std::cout << "iteration no. " << 5*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
 			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 		}
-	}
-
+	}*/
+	Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
+	std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
 
 	/*for(int i = 0; i < 50; i++){
 		sim.iterate_sirv();
@@ -96,7 +97,6 @@ int main() {
 	end = clock();
 	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
-	getchar();
 	return 0;
 
 }

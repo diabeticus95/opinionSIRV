@@ -39,6 +39,7 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
+	std::vector<double> iter_time;
 
 	void init_states();
 	void init_opinions();
