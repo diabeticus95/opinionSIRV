@@ -93,7 +93,7 @@ void Network::export_igraph_edgelist(char* filename){
 	fclose(fp);
 }
 
-std::unordered_set<int> Network::get_neighbors(int node){
+std::unordered_set<int>& Network::get_neighbors(int node){
 	return net[node];
 }
 
