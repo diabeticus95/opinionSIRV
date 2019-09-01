@@ -3,6 +3,7 @@
 #ifndef AG_RANDOM_H
 #define AG_RANDOM_H
 #include <random>
+#include <ctime>
 class pcg
 {
 public:
@@ -16,15 +17,15 @@ public:
         : m_state(0x853c49e6748fea9bULL)
         , m_inc(0xda3e39cb94b95bdbULL)
     {}
-    explicit pcg(std::random_device &rd)
+    explicit pcg(std::mt19937& mt, std::uniform_int_distribution<int>& dist)
     {
-        seed(rd);
+        seed(mt, dist);
     }
 
-    void seed(std::random_device &rd)
+    void seed(std::mt19937& mt, std::uniform_int_distribution<int>& dist)
     {
-        uint64_t s0 = uint64_t(rd()) << 31 | uint64_t(rd());
-        uint64_t s1 = uint64_t(rd()) << 31 | uint64_t(rd());
+        uint64_t s0 = uint64_t(dist(mt)) << 31 | uint64_t(dist(mt));
+        uint64_t s1 = uint64_t(dist(mt)) << 31 | uint64_t(dist(mt));
 
         m_state = 0;
         m_inc = (s1 << 1) | 1;

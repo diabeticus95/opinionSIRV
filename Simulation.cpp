@@ -12,7 +12,8 @@
 Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
-	rand = pcg(rd);
+	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> dist(0, RAND_MAX);
+	rand = pcg(mt, dist);
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
@@ -124,7 +125,7 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	clock_t begin = clock();
+	//clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -138,8 +139,8 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
-	clock_t end = clock();
-	iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+	//clock_t end = clock();
+	//iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -189,12 +190,12 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	for(auto &time : iter_time){
+	/*for(auto &time : iter_time){
 		avg_iter += time;
 	}
 	avg_iter /= iter_time.size();
 	avg_iter /= iter_time.size();
-	std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015
+	std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015*/
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -211,9 +212,9 @@ int Simulation::get_recovered_number(){ //for cutoff
 	}
 	return R;
 }
-double Simulation::get_avg_iter(){
+/*double Simulation::get_avg_iter(){
 	return avg_iter;
-}
+}*/
 
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){

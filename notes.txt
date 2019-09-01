@@ -6,3 +6,5 @@
 moge zrobic przelot po I, zgarnac ich sasiadow w unordered_seta zeby sie nie powtarzali, i potem zrobic im triala
 
 # zamiast tworzyc dist za kazdym razem moge stworzyc z palca 20 i tylko powyzej uzywac
+
+#wypisz opinie i sprawdz jak sie kreca
