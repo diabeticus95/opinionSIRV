@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ctime>
 #include <unordered_set>
+#include "random.h"
 
 Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
@@ -188,10 +189,10 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	double avg_iter = 0;
 	for(auto &time : iter_time){
 		avg_iter += time;
 	}
+	avg_iter /= iter_time.size();
 	avg_iter /= iter_time.size();
 	std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015
 	return i;
@@ -209,6 +210,9 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
+}
+double Simulation::get_avg_iter(){
+	return avg_iter;
 }
 
 void Simulation::print_feature_arrays(){

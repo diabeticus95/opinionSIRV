@@ -92,7 +92,7 @@ int main() {
 		std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
 		avg_iter += sim.get_avg_iter();
 	}
-	std::cout<<"avg iter "<<avg_iter/100<<std::endl;
+	std::cout<<"avg iter final"<<avg_iter/100<<std::endl;
 
 
 	/*for(int i = 0; i < 50; i++){
