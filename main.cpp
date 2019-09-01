@@ -85,14 +85,14 @@ int main() {
 		}
 	}*/
 	double avg_iter = 0;
-	for (int i = 0; i < 100; i++){
+	for (int i = 0; i < 30; i++){
 		Network sirv(size, p);
 		Network opinion(size, p);
 		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
 		std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
 		avg_iter += sim.get_avg_iter();
 	}
-	std::cout<<"avg iter final"<<avg_iter/100<<std::endl;
+	std::cout<<"avg iter final"<<avg_iter/30<<std::endl;
 
 
 	/*for(int i = 0; i < 50; i++){

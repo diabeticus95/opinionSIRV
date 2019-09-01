@@ -3,7 +3,6 @@
 #include <random>
 #include <vector>
 #include <unordered_set>
-#include "random.h"
 
 class Network {
 public:
@@ -23,8 +22,7 @@ private:
 	std::unordered_set<int>* net;
 	int* k;
 	double p;
-    std::random_device rd;
-    pcg rand;
+    std::mt19937_64 mt;
 	std::uniform_int_distribution<int> dist;
 	void draw_links();
 	bool insert_link(std::pair<std::unordered_set<int>::iterator,bool> ret);
