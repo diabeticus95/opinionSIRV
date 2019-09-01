@@ -2,7 +2,7 @@
 #include "Network.h"
 #include "zerowanie.h"
 #include <vector>
-#include <random>
+#include <mtom>
 #include <iostream>
 #include <algorithm>
 #include <ctime>
@@ -11,8 +11,7 @@
 Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
-	rand = pcg(rd);
-	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
+	mt = std::mt19937(time(0));	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
 	states_tmp = new char[size];
@@ -43,7 +42,7 @@ void Simulation::init_states(){
 void Simulation::init_opinions(){
     std::uniform_int_distribution<int> dist(0, 3);
     for (int i = 0; i < size; i++){
-    	int rnd = dist(rand);
+    	int rnd = dist(mt);
     	if(rnd == 0) opinions[i] = -2;
     	else if(rnd == 1) opinions[i] = -1;
     	else if(rnd == 2) opinions[i] = 1;
@@ -72,7 +71,7 @@ void Simulation::get_sick(int& i){
 
 void Simulation::infection_trial(int& i){
 	//bool debug = false;
-	double rnd = infection_dist(rand);
+	double rnd = infection_dist(mt);
 	if(states[i] == 'S'){
 		if(rnd < b) get_sick(i);
 	}
@@ -95,7 +94,7 @@ bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 }
 
 void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
-	double trigger = infection_dist(rand);
+	double trigger = infection_dist(mt);
 
     if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
       opinions_tmp[agent_index] = agent_opinion + 1;
@@ -169,7 +168,7 @@ void Simulation::iterate_opinion(){
 		else if(interactive_neighbors.size() > 1){
 			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
 			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
-			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
+			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
 			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
@@ -188,12 +187,11 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	double avg_iter = 0;
 	for(auto &time : iter_time){
 		avg_iter += time;
 	}
 	avg_iter /= iter_time.size();
-	std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015
+	//std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -209,6 +207,9 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
+}
+double Simulation::get_avg_iter(){
+	return avg_iter;
 }
 
 void Simulation::print_feature_arrays(){

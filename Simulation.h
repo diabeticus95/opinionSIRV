@@ -17,6 +17,7 @@ public:
 	void iterate_opinion();
 	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
 	int get_recovered_number();	//used to implement cutoff
+	double get_avg_iter();
 	void print_state_counts();
 	void print_opinion_counts();
 	void print_for_charts(std::string filename, bool first_run);
@@ -24,8 +25,7 @@ public:
 
 
 private:
-    std::random_device rd;
-    pcg rand;
+    std::mt19937 mt;
 	std::uniform_real_distribution<double> infection_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
@@ -42,6 +42,7 @@ private:
 	char* states;
 	char* states_tmp;
 	std::vector<double> iter_time;
+	double avg_iter = 0;
 
 	void init_states();
 	void init_opinions();
