@@ -5,7 +5,8 @@
 #include <unordered_set>
 
 Network::Network(int size, double p):size(size), p(p){
-	mt = std::mt19937_64(time(0));
+	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
+	rand = pcg(mt, pcg_seed);
 	dist = std::uniform_int_distribution<int>(0, size-1);
 	this->k = new int[size];
 	this->n_of_links = p * size * (size-1) / 2;
@@ -38,8 +39,8 @@ void Network::draw_links(){
 	std::cerr<<"draw repeated "<<rep_counter<<" times"<<std::endl;
 }
 bool Network::insert_link(std::pair<std::unordered_set<int>::iterator,bool> ret){
-	int tmp1 = dist(mt);
-	int tmp2 = dist(mt);
+	int tmp1 = dist(rand);
+	int tmp2 = dist(rand);
 	if(tmp1==tmp2) return 0;
 	ret = net[tmp1].insert(tmp2);
 	if(!ret.second) return 0;

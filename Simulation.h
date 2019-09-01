@@ -5,6 +5,7 @@
 #include <vector>
 #include "Network.h"
 #include <ctime>
+#include "random.h"
 
 
 class Simulation {
@@ -23,8 +24,8 @@ public:
 
 
 private:
-    std::mt19937 mt;
-	std::uniform_real_distribution<double> infection_dist;
+    pcg rand;
+    std::uniform_real_distribution<double> infection_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
 	double w; // omega vax efficiency coefficient
