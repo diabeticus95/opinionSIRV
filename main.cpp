@@ -11,7 +11,7 @@
 #include "Network.h"
 #include "zerowanie.h"
 #include "Simulation.h"
-#include "string"
+#include <string>
 
 using namespace std;
 
@@ -84,8 +84,13 @@ int main() {
 			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 		}
 	}*/
-	Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
-	std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
+	for (int i = 0; i < 100; i++){
+		Network sirv(size, p);
+		Network opinion(size, p);
+		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
+		std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
+	}
+
 
 	/*for(int i = 0; i < 50; i++){
 		sim.iterate_sirv();

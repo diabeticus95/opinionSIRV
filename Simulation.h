@@ -5,6 +5,7 @@
 #include <vector>
 #include "Network.h"
 #include <ctime>
+#include "random.h"
 
 
 class Simulation {
@@ -23,7 +24,8 @@ public:
 
 
 private:
-    std::mt19937 mt;
+    std::random_device rd;
+    pcg rand;
 	std::uniform_real_distribution<double> infection_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
@@ -43,12 +45,12 @@ private:
 
 	void init_states();
 	void init_opinions();
-	void vaccinate(int i);
-	void die(int i);
-	void get_sick(int i);
-	void infection_trial(int i);
-	bool can_interact(int agent_opinion, int neighbor_index);
-	void interact(int agent_index, int agent_opinion, int neighbor_opinion);
+	void vaccinate(int& i);
+	void die(int& i);
+	void get_sick(int& i);
+	void infection_trial(int& i);
+	bool can_interact(int& agent_opinion, int& neighbor_index);
+	void interact(int& agent_index, int& agent_opinion, int& neighbor_opinion);
 	int get_sick_number();
 
 };

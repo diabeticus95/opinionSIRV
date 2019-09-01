@@ -8,9 +8,10 @@
 #include <ctime>
 #include <unordered_set>
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) : b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
+	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
-	mt = std::mt19937(time(0));
+	rand = pcg(rd);
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
@@ -42,7 +43,7 @@ void Simulation::init_states(){
 void Simulation::init_opinions(){
     std::uniform_int_distribution<int> dist(0, 3);
     for (int i = 0; i < size; i++){
-    	int rnd = dist(mt);
+    	int rnd = dist(rand);
     	if(rnd == 0) opinions[i] = -2;
     	else if(rnd == 1) opinions[i] = -1;
     	else if(rnd == 2) opinions[i] = 1;
@@ -54,24 +55,24 @@ void Simulation::init_opinions(){
 }
 
 
-void Simulation::vaccinate(int i){
+void Simulation::vaccinate(int& i){
 	if(states[i] == 'S'){
 		states[i] = 'V';
 		states_tmp[i] = 'V';
 	}
 }
 
-void Simulation::die(int i){
+void Simulation::die(int& i){
 	states_tmp[i] = 'R';
 }
 
-void Simulation::get_sick(int i){
+void Simulation::get_sick(int& i){
 	states_tmp[i] = 'I';
 }
 
-void Simulation::infection_trial(int i){
+void Simulation::infection_trial(int& i){
 	//bool debug = false;
-	double rnd = infection_dist(mt);
+	double rnd = infection_dist(rand);
 	if(states[i] == 'S'){
 		if(rnd < b) get_sick(i);
 	}
@@ -87,14 +88,14 @@ void Simulation::infection_trial(int i){
 	}
 }
 
-bool Simulation::can_interact(int agent_opinion, int neighbor_index){
+bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 	int opinion_j = opinions[neighbor_index];
 	if(agent_opinion == -2 && opinion_j == -2) return false;
 	else return true;
 }
 
-void Simulation::interact(int agent_index, int agent_opinion, int neighbor_opinion){
-	double trigger = infection_dist(mt);
+void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
+	double trigger = infection_dist(rand);
 
     if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
       opinions_tmp[agent_index] = agent_opinion + 1;
@@ -168,7 +169,7 @@ void Simulation::iterate_opinion(){
 		else if(interactive_neighbors.size() > 1){
 			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
 			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
-			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(mt)]];
+			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
 			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
