@@ -41,7 +41,7 @@ int main() {
 }
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
-	for(unsigned int rep = 0; rep < 100/std::thread::hardware_concurrency(); rep++){
+	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network sirv(size, p, mt);
 		Network opinion(size, p, mt);
 			for (double w = 0; w < 1; w+=0.1){
@@ -57,7 +57,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					int days = 0;
 					do {
 						if (counter > 0) delete sim;
-						if(counter > 10){
+						if(counter > 50){
 							Network sirv(size, p, mt);
 							Network opinion(size, p, mt);
 							std::cout<<"swapping networks"<<std::endl;
@@ -81,8 +81,6 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 				}
 			}
 	}
-
-
 }
 
 
