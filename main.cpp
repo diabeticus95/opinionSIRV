@@ -63,7 +63,7 @@ int main() {
 			int days = 0;
 			do {
 				if (counter > 0) delete sim;
-				sim = new Simulation(b_c, w, (double)10 / 11, (double)1 / 11, sirv, opinion, size);
+				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;
 				std::cout << "recovered number:" << std::endl;
