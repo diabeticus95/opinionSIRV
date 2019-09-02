@@ -67,6 +67,7 @@ int main() {
 					Network sirv(size, p);
 					Network opinion(size, p);
 					std::cout<<"swapping networks"<<std::endl;
+					counter = 1;
 				}
 				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
 				days = sim->iterate_until_end_of_epidemy();
