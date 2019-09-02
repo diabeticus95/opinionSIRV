@@ -63,6 +63,11 @@ int main() {
 			int days = 0;
 			do {
 				if (counter > 0) delete sim;
+				if(counter > 10){
+					Network sirv(size, p);
+					Network opinion(size, p);
+					std::cout<<"swapping networks"<<std::endl;
+				}
 				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;

@@ -81,6 +81,7 @@ void Simulation::infection_trial(int& i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
+			opinions_tmp[i] = -2;
 		}
 	}
 	else{
