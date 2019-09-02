@@ -7,10 +7,10 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
-	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
+	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];

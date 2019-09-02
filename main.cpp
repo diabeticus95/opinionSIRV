@@ -12,43 +12,37 @@
 #include "zerowanie.h"
 #include "Simulation.h"
 #include "string"
+#include <thread>
 
 using namespace std;
 
 int main() {
-
+	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
 	double p = (double)4/size;
 	int cutoff = 50;
+	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 
-	clock_t begin = clock();
-	Network sirv(size, p);
-	Network opinion(size, p);
-	clock_t end = clock();
+	time_t begin = clock();
+	int n_of_reps = 10;
+	std::thread threads_array[n_of_reps];
+	for (int rep = 0; rep < n_of_reps; rep++){
+		int seed = seeds(mt);
+	    threads_array[rep] = std::thread(simulate_parallel,size, p, cutoff,  rep, seed);
+	}
+	for (int rep = 0; rep < n_of_reps; rep++){
+		threads_array[rep].join();
+	}
+	time_t end = clock();
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"Tworzenie sieci ER trwa³o "<<time_elapsed<<std::endl;
+	std::cout<<"both iters "<<time_elapsed<<std::endl;
+	return 0;
 
-
-
-	//begin = clock();
-	//int b, int w, Network sirv, Network opinion, int size
-
-
-	//end = clock();
-
-	/*Simulation sim(0.1, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
-	std::cout<<"feature arrays"<<std::endl;
-	sim.print_feature_arrays();
-
-
-	sim.print_state_counts();
-	sim.print_opinion_counts();
-	sim.iterate_sirv();
-	sim.iterate_opinion();
-	sim.print_state_counts();
-	sim.print_opinion_counts();*/
-
-	begin = clock();
+}
+void simulate_parallel(int size, double p, int cutoff, int rep, int seed){
+	std::mt19937 mt(seed);
+	Network sirv(size, p, mt);
+	Network opinion(size, p, mt);
 
 	for (double w = 0; w < 1; w+=0.1){
 		for (int b = 0; b < 5; b++){
@@ -64,12 +58,12 @@ int main() {
 			do {
 				if (counter > 0) delete sim;
 				if(counter > 10){
-					Network sirv(size, p);
-					Network opinion(size, p);
+					Network sirv(size, p, mt);
+					Network opinion(size, p, mt);
 					std::cout<<"swapping networks"<<std::endl;
 					counter = 1;
 				}
-				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
+				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, mt);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;
 				std::cout << "recovered number:" << std::endl;
@@ -77,7 +71,7 @@ int main() {
 			}
 			while (sim->get_recovered_number() <= cutoff);
 			
-			std::string filename("chart1.csv");
+			std::string filename("chart" + std::to_string(rep) + ".csv");
 			if(w == 0 && b == 0) sim->print_for_charts(filename, true, days);
 			else sim->print_for_charts(filename, false, days);
 			delete sim;
@@ -87,18 +81,6 @@ int main() {
 		}
 	}
 
-
-	/*for(int i = 0; i < 50; i++){
-		sim.iterate_sirv();
-		sim.iterate_opinion();
-		if(i == 0) sim.print_for_charts("test_sirv.csv", true);
-		else sim.print_for_charts("test_sirv.csv", false);
-	}*/
-
-	end = clock();
-	time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"both iters "<<time_elapsed<<std::endl;
-	return 0;
-
 }
+
 

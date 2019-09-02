@@ -3,9 +3,10 @@
 #include <ctime>
 #include <iostream>
 #include <unordered_set>
+#include <thread>
 
-Network::Network(int size, double p):size(size), p(p){
-	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
+Network::Network(int size, double p, std::mt19937& mt):size(size), p(p){
+	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
 	dist = std::uniform_int_distribution<int>(0, size-1);
 	this->k = new int[size];
