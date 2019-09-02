@@ -21,9 +21,7 @@ Network::Network(int size, double p):size(size), p(p){
 
 Network::~Network() {
 	delete[] k;
-	for(int i = 0; i < size; i++){
-		net[i].clear();
-	}
+	delete[] net;
 }
 
 
