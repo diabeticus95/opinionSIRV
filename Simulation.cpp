@@ -7,7 +7,8 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) : b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
+	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
@@ -54,22 +55,22 @@ void Simulation::init_opinions(){
 }
 
 
-void Simulation::vaccinate(int i){
+void Simulation::vaccinate(int& i){
 	if(states[i] == 'S'){
 		states[i] = 'V';
 		states_tmp[i] = 'V';
 	}
 }
 
-void Simulation::die(int i){
+void Simulation::die(int& i){
 	states_tmp[i] = 'R';
 }
 
-void Simulation::get_sick(int i){
+void Simulation::get_sick(int& i){
 	states_tmp[i] = 'I';
 }
 
-void Simulation::infection_trial(int i){
+void Simulation::infection_trial(int& i){
 	//bool debug = false;
 	double rnd = infection_dist(rand);
 	if(states[i] == 'S'){
@@ -87,13 +88,13 @@ void Simulation::infection_trial(int i){
 	}
 }
 
-bool Simulation::can_interact(int agent_opinion, int neighbor_index){
+bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 	int opinion_j = opinions[neighbor_index];
 	if(agent_opinion == -2 && opinion_j == -2) return false;
 	else return true;
 }
 
-void Simulation::interact(int agent_index, int agent_opinion, int neighbor_opinion){
+void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
 	double trigger = infection_dist(rand);
 
     if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
@@ -164,7 +165,6 @@ void Simulation::iterate_opinion(){
 			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
 		else if(interactive_neighbors.size() > 1){
 			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
-			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
 			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
 			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
 		}

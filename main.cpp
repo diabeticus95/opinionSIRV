@@ -50,8 +50,7 @@ int main() {
 
 	begin = clock();
 
-
-	for (double w = 0; w < 1; w+= 0.1){
+	for (double w = 0; w < 1; w+=0.1){
 		for (int b = 0; b < 5; b++){
 			clock_t iter_begin = clock();
 			double b_c = 0.1;
