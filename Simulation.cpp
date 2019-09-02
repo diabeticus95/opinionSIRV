@@ -63,6 +63,7 @@ void Simulation::vaccinate(int& i){
 }
 
 void Simulation::die(int& i){
+	states[i] = 'R';
 	states_tmp[i] = 'R';
 }
 
@@ -90,24 +91,24 @@ void Simulation::infection_trial(int& i){
 
 bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 	int opinion_j = opinions[neighbor_index];
-	if(agent_opinion == -2 && opinion_j == -2) return false;
+	if(agent_opinion == -2 && opinion_j < 0) return false;
 	else return true;
 }
 
 void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
 	double trigger = infection_dist(rand);
 
-    if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
-      opinions_tmp[agent_index] = agent_opinion + 1;
+    if ((agent_opinion == 1 && neighbor_opinion > 0) && trigger < p){
+      opinions_tmp[agent_index] = 2;
       vaccinate(agent_index);
-    } else if (agent_opinion == -1 && neighbor_opinion < 0 && trigger < p){
-    	opinions_tmp[agent_index] = agent_opinion - 1;
-    } else if (agent_opinion == 1 && neighbor_opinion < 0 && trigger < q){
-    	opinions_tmp[agent_index] = agent_opinion - 2;
-    } else if (agent_opinion == -1 && neighbor_opinion > 0 && trigger < q){
-    	opinions_tmp[agent_index]= agent_opinion + 2;
-    } else if (agent_opinion == -2 && neighbor_opinion > 0 && trigger < q){
-    	opinions_tmp[agent_index] = agent_opinion + 1;
+    } else if ((agent_opinion == -1 && neighbor_opinion < 0) && trigger < p){
+    	opinions_tmp[agent_index] = -2;
+    } else if ((agent_opinion == 1 && neighbor_opinion < 0) && trigger < q){
+    	opinions_tmp[agent_index] = -1;
+    } else if ((agent_opinion == -1 && neighbor_opinion > 0) && trigger < q){
+    	opinions_tmp[agent_index]= 1;
+    } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q){
+    	opinions_tmp[agent_index] = -1;
     }
 }
 
