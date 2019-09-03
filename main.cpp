@@ -43,9 +43,12 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-		for(int i = 0; i < 18; i++){
-			neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
-		}
+	std::string filename("chart1.csv");
+	FILE* fp_w = fopen(filename.c_str(), "w");
+	FILE* fp_a = fopen(filename.c_str(), "a");
+	for(int i = 0; i < 18; i++){
+		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
+	}
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network sirv(size, p, mt);
 		Network opinion(size, p, mt);
@@ -77,8 +80,11 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					while (sim->get_recovered_number() <= cutoff);
 
 					std::string filename("chart" + std::to_string(chunk) + ".csv");
-					if(w == 0 && b == 0 && rep == 0) sim->print_for_charts(filename, true, days);
-					else sim->print_for_charts(filename, false, days);
+					if(w == 0 && b == 0 && rep == 0){
+						sim->print_for_charts(fp_w, true, days);
+						fclose(fp_w);
+					}
+					else sim.print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
 					std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
@@ -86,6 +92,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 				}
 			}
 	}
+	fclose(fp_a);
 }
 
 

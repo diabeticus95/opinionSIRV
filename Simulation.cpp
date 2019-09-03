@@ -126,6 +126,7 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
+	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -139,6 +140,8 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
+	clock_t end = clock();
+	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -147,6 +150,8 @@ void Simulation::iterate_sirv(){
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
+	clock_t begin = clock();
+
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
 	int interaction_neighbor_opinion = 0;
@@ -183,6 +188,9 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
+	clock_t end = clock();
+	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+
 }
 int Simulation::iterate_until_end_of_epidemy(){
 	int i = 0;
@@ -193,6 +201,18 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
+	/*for(auto &time : sir_time){
+		sir_iter += time;
+	}
+	for(auto &time : op_time){
+		op_iter += time;
+	}
+	sir_iter /= sir_time.size();
+	op_iter /= op_time.size();
+
+	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
+	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
+
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -208,6 +228,12 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
+}
+double Simulation::get_sir_iter(){
+	return sir_iter;
+}
+double Simulation::get_op_iter(){
+	return op_iter;
 }
 
 void Simulation::print_feature_arrays(){
@@ -262,13 +288,10 @@ void Simulation::print_for_charts(std::string filename, bool first_run){
 	fprintf(fp, "%d,%d,%d,%d,%d,%d,%d,%d\n", S,I,R,V,opinion_counts[0], opinion_counts[1], opinion_counts[2], opinion_counts[3]);
 	fclose(fp);
 }
-void Simulation::print_for_charts(std::string filename, bool first_run, int days){
-	FILE *fp;
+void Simulation::print_for_charts(FILE* fp, bool first_run, int days){
 	if(first_run){
-		fp = fopen(filename.c_str(), "w");
 		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%c,%c\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", 'w', 'b');
 	}
-	else fp = fopen(filename.c_str(), "a");
 
 	int opinion_counts[4];
 	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
@@ -285,5 +308,4 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int days
 			else if(states[i] == 'V') V++;
 	}
 	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, w, b);
-	fclose(fp);
 }
