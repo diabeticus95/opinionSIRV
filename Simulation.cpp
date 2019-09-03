@@ -140,7 +140,7 @@ void Simulation::iterate_sirv(){
 		}
 	}
 	clock_t end = clock();
-	iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -149,6 +149,8 @@ void Simulation::iterate_sirv(){
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
+	clock_t begin = clock();
+
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
 	int interaction_neighbor_opinion = 0;
@@ -179,6 +181,9 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
+	clock_t end = clock();
+	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+
 }
 int Simulation::iterate_until_end_of_epidemy(){
 	int i = 0;
@@ -189,12 +194,18 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	for(auto &time : iter_time){
-		avg_iter += time;
+	for(auto &time : sir_time){
+		sir_iter += time;
 	}
-	avg_iter /= iter_time.size();
-	avg_iter /= iter_time.size();
-	std::cout<<"avg_iter = "<<avg_iter<<std::endl; // 0.015*/
+	for(auto &time : op_time){
+		op_iter += time;
+	}
+	sir_iter /= sir_time.size();
+	op_iter /= op_time.size();
+
+	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015*/
+	std::cout<<"op_iter = "<<op_iter<<std::endl;
+
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -211,8 +222,11 @@ int Simulation::get_recovered_number(){ //for cutoff
 	}
 	return R;
 }
-double Simulation::get_avg_iter(){
-	return avg_iter;
+double Simulation::get_sir_iter(){
+	return sir_iter;
+}
+double Simulation::get_op_iter(){
+	return op_iter;
 }
 
 void Simulation::print_feature_arrays(){

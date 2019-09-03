@@ -17,7 +17,9 @@ public:
 	void iterate_opinion();
 	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
 	int get_recovered_number();	//used to implement cutoff
-	double get_avg_iter();
+	double get_sir_iter();
+	double get_op_iter();
+
 
 	void print_state_counts();
 	void print_opinion_counts();
@@ -42,8 +44,10 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
-	std::vector<double> iter_time;
-	double avg_iter = 0;
+	std::vector<double> sir_time;
+	std::vector<double> op_time;
+	double sir_iter = 0;
+	double op_iter = 0;
 
 	void init_states();
 	void init_opinions();
