@@ -74,8 +74,6 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						counter++;
-						std::cout << "recovered number:" << std::endl;
-						std::cout << sim->get_recovered_number() << std::endl;
 					}
 					while (sim->get_recovered_number() <= cutoff);
 
