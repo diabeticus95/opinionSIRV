@@ -14,6 +14,7 @@
 #include "string"
 #include <thread>
 
+
 using namespace std;
 
 int main() {
@@ -41,6 +42,10 @@ int main() {
 }
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
+	std::uniform_int_distribution<int> neighbor_dist[18];
+		for(int i = 0; i < 18; i++){
+			neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
+		}
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network sirv(size, p, mt);
 		Network opinion(size, p, mt);
@@ -63,7 +68,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 							std::cout<<"swapping networks"<<std::endl;
 							counter = 1;
 						}
-						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, mt);
+						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						counter++;
 						std::cout << "recovered number:" << std::endl;

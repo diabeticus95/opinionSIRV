@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt) :
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
@@ -19,6 +19,7 @@ Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Ne
 	opinions_tmp = new int[size];
 	sick_time = new int[size];
 	init_states(); init_opinions(); zeruj(sick_time, size);
+	this->neighbor_dist = neighbor_dist;
 	for(int i = 0; i < size; i++){
 		opinions_tmp[i] = opinions[i];
 		states_tmp[i] = states[i];
@@ -164,11 +165,17 @@ void Simulation::iterate_opinion(){
 		}
 		if(interactive_neighbors.size() == 0) continue;
 		else if( interactive_neighbors.size() == 1)
-			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
-		else if(interactive_neighbors.size() > 1){
-			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
-			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
-			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
+					interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
+				else if(interactive_neighbors.size() > 1){
+					if(interactive_neighbors.size() < 20){
+						int random_index = neighbor_dist[interactive_neighbors.size() - 2](rand);
+						if(debug) std::cout<<"random index: "<<random_index<<std::endl;
+						interaction_neighbor_opinion = opinions[interactive_neighbors[random_index]];
+					}
+					else{
+						std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
+						interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
+					}
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
 		interactive_neighbors.clear();
