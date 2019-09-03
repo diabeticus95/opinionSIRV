@@ -86,10 +86,14 @@ int main() {
 	}*/
 	double sir_iter = 0;
 	double op_iter = 0;
+	std::uniform_int_distribution<int> neighbor_dist[18];
+	for(int i = 0; i < 18; i++){
+			 neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
+		}
 	for (int i = 0; i < 100; i++){
 		Network sirv(size, p);
 		Network opinion(size, p);
-		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
+		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size, neighbor_dist);
 		std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
 		sir_iter += sim.get_sir_iter();
 		op_iter += sim.get_op_iter();
