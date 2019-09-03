@@ -80,12 +80,13 @@ int main() {
 		Network sirv(size, p);
 		Network opinion(size, p);
 		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size, neighbor_dist);
-		sim.iterate_until_end_of_epidemy();
+		days = sim.iterate_until_end_of_epidemy();
 		if(i == 0) {
 			sim.print_for_charts(fp_w, true, days);
 			fclose(fp_w);
 		}
 		else sim.print_for_charts(fp_a, false, days);
+		std::cout<<days<<"  "<<sim.get_recovered_number();
 
 		//std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
 		//sir_iter += sim.get_sir_iter();

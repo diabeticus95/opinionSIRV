@@ -201,7 +201,7 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	for(auto &time : sir_time){
+	/*for(auto &time : sir_time){
 		sir_iter += time;
 	}
 	for(auto &time : op_time){
@@ -210,8 +210,8 @@ int Simulation::iterate_until_end_of_epidemy(){
 	sir_iter /= sir_time.size();
 	op_iter /= op_time.size();
 
-	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015*/
-	std::cout<<"op_iter = "<<op_iter<<std::endl;
+	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
+	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
 
 	return i;
 }
