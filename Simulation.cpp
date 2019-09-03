@@ -125,7 +125,7 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	//clock_t begin = clock();
+	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -139,8 +139,8 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
-	//clock_t end = clock();
-	//iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+	clock_t end = clock();
+	iter_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -190,7 +190,7 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	/*for(auto &time : iter_time){
+	for(auto &time : iter_time){
 		avg_iter += time;
 	}
 	avg_iter /= iter_time.size();
@@ -212,9 +212,9 @@ int Simulation::get_recovered_number(){ //for cutoff
 	}
 	return R;
 }
-/*double Simulation::get_avg_iter(){
+double Simulation::get_avg_iter(){
 	return avg_iter;
-}*/
+}
 
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){
