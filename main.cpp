@@ -84,7 +84,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 						sim->print_for_charts(fp_w, true, days);
 						fclose(fp_w);
 					}
-					else sim.print_for_charts(fp_a, false, days);
+					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
 					std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
