@@ -18,6 +18,7 @@ public:
 	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
 	int get_recovered_number();	//used to implement cutoff
 	double get_avg_iter();
+
 	void print_state_counts();
 	void print_opinion_counts();
 	void print_for_charts(std::string filename, bool first_run);
@@ -26,7 +27,7 @@ public:
 
 private:
     pcg rand;
-	std::uniform_real_distribution<double> infection_dist;
+    std::uniform_real_distribution<double> infection_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
 	double w; // omega vax efficiency coefficient

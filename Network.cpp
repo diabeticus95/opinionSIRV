@@ -5,8 +5,8 @@
 #include <unordered_set>
 
 Network::Network(int size, double p):size(size), p(p){
-	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seed(0, RAND_MAX);
-	rand = pcg(mt, seed);
+	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
+	rand = pcg(mt, pcg_seed);
 	dist = std::uniform_int_distribution<int>(0, size-1);
 	this->k = new int[size];
 	this->n_of_links = p * size * (size-1) / 2;
@@ -21,9 +21,7 @@ Network::Network(int size, double p):size(size), p(p){
 
 Network::~Network() {
 	delete[] k;
-	for(int i = 0; i < size; i++){
-		net[i].clear();
-	}
+	delete[] net;
 }
 
 

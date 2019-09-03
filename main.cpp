@@ -50,7 +50,6 @@ int main() {
 
 	begin = clock();
 
-
 	for (double w = 0; w < 1; w+=0.1){
 		for (int b = 0; b < 5; b++){
 			clock_t iter_begin = clock();
@@ -59,14 +58,17 @@ int main() {
 			else if(b == 2) b_c = 0.4;
 			else if(b == 3) b_c = 0.6;
 			else if(b == 4) b_c = 0.8;
-			/*double w_c = 0;
-			if (w == 1) w_c = 0.5;
-			else if (w == 2) w_c = 0.8;*/
 			Simulation* sim;
 			int counter = 0;
 			int days = 0;
 			do {
 				if (counter > 0) delete sim;
+				if(counter > 10){
+					Network sirv(size, p);
+					Network opinion(size, p);
+					std::cout<<"swapping networks"<<std::endl;
+					counter = 1;
+				}
 				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;

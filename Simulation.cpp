@@ -5,15 +5,13 @@
 #include <random>
 #include <iostream>
 #include <algorithm>
-#include <ctime>
-#include <unordered_set>
 #include "random.h"
 
 Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size) :
 	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
-	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> dist(0, RAND_MAX);
-	rand = pcg(mt, dist);
+	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
+	rand = pcg(mt, pcg_seed);
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
@@ -65,6 +63,7 @@ void Simulation::vaccinate(int& i){
 }
 
 void Simulation::die(int& i){
+	states[i] = 'R';
 	states_tmp[i] = 'R';
 }
 
@@ -82,6 +81,7 @@ void Simulation::infection_trial(int& i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
+			opinions_tmp[i] = -2;
 		}
 	}
 	else{
@@ -92,24 +92,24 @@ void Simulation::infection_trial(int& i){
 
 bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 	int opinion_j = opinions[neighbor_index];
-	if(agent_opinion == -2 && opinion_j == -2) return false;
+	if(agent_opinion == -2 && opinion_j < 0) return false;
 	else return true;
 }
 
 void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
 	double trigger = infection_dist(rand);
 
-    if (agent_opinion == 1 && neighbor_opinion > 0 && trigger < p){
-      opinions_tmp[agent_index] = agent_opinion + 1;
+    if ((agent_opinion == 1 && neighbor_opinion > 0) && trigger < p){
+      opinions_tmp[agent_index] = 2;
       vaccinate(agent_index);
-    } else if (agent_opinion == -1 && neighbor_opinion < 0 && trigger < p){
-    	opinions_tmp[agent_index] = agent_opinion - 1;
-    } else if (agent_opinion == 1 && neighbor_opinion < 0 && trigger < q){
-    	opinions_tmp[agent_index] = agent_opinion - 2;
-    } else if (agent_opinion == -1 && neighbor_opinion > 0 && trigger < q){
-    	opinions_tmp[agent_index]= agent_opinion + 2;
-    } else if (agent_opinion == -2 && neighbor_opinion > 0 && trigger < q){
-    	opinions_tmp[agent_index] = agent_opinion + 1;
+    } else if ((agent_opinion == -1 && neighbor_opinion < 0) && trigger < p){
+    	opinions_tmp[agent_index] = -2;
+    } else if ((agent_opinion == 1 && neighbor_opinion < 0) && trigger < q){
+    	opinions_tmp[agent_index] = -1;
+    } else if ((agent_opinion == -1 && neighbor_opinion > 0) && trigger < q){
+    	opinions_tmp[agent_index]= 1;
+    } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q){
+    	opinions_tmp[agent_index] = -1;
     }
 }
 
@@ -170,7 +170,6 @@ void Simulation::iterate_opinion(){
 			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
 		else if(interactive_neighbors.size() > 1){
 			std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
-			//sprawdzic koszt tworzenia nowych dist, moge przygotowac z gory do 20 sasiadow i tworzyc nowe tylko jesli jest ich wiecej
 			interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
 			if(debug) std::cout<<"interacted with neighbor with opinion "<<interaction_neighbor_opinion<<std::endl;
 		}
