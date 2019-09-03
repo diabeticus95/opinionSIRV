@@ -10,7 +10,7 @@
 
 class Simulation {
 public:
-	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size);
+	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::uniform_int_distribution<int> neighbor_dist[18]);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
@@ -26,6 +26,7 @@ public:
 private:
     pcg rand;
     std::uniform_real_distribution<double> infection_dist;
+	std::uniform_int_distribution<int>* neighbor_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
 	double w; // omega vax efficiency coefficient

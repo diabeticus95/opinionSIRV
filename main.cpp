@@ -11,7 +11,7 @@
 #include "Network.h"
 #include "zerowanie.h"
 #include "Simulation.h"
-#include "string"
+#include <string>
 
 using namespace std;
 
@@ -28,28 +28,11 @@ int main() {
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"Tworzenie sieci ER trwa³o "<<time_elapsed<<std::endl;
 
-
-
-	//begin = clock();
-	//int b, int w, Network sirv, Network opinion, int size
-
-
-	//end = clock();
-
-	/*Simulation sim(0.1, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
-	std::cout<<"feature arrays"<<std::endl;
-	sim.print_feature_arrays();
-
-
-	sim.print_state_counts();
-	sim.print_opinion_counts();
-	sim.iterate_sirv();
-	sim.iterate_opinion();
-	sim.print_state_counts();
-	sim.print_opinion_counts();*/
-
 	begin = clock();
-
+	std::uniform_int_distribution<int> neighbor_dist[18];
+	for(int i = 0; i < 18; i++){
+		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
+	}
 	for (double w = 0; w < 1; w+=0.1){
 		for (int b = 0; b < 5; b++){
 			clock_t iter_begin = clock();
@@ -69,7 +52,7 @@ int main() {
 					std::cout<<"swapping networks"<<std::endl;
 					counter = 1;
 				}
-				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size);
+				sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, neighbor_dist);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;
 				std::cout << "recovered number:" << std::endl;
