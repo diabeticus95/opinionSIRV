@@ -43,15 +43,15 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart1.csv");
+	std::string filename("chart" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
 		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
 	}
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
-		Network sirv(size, p, mt);
-		Network opinion(size, p, mt);
+		Network* sirv = new Network(size, p, mt);
+		Network* opinion = new Network(size, p, mt);
 			for (double w = 0; w < 1; w+=0.1){
 				for (int b = 0; b < 5; b++){
 					clock_t iter_begin = clock();
@@ -66,18 +66,18 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					do {
 						if (counter > 0) delete sim;
 						if(counter > 50){
-							Network sirv(size, p, mt);
-							Network opinion(size, p, mt);
+							delete sirv; delete opinion;
+							sirv = new Network(size, p, mt);
+							opinion = new Network(size, p, mt);
 							std::cout<<"swapping networks"<<std::endl;
 							counter = 1;
 						}
-						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, sirv, opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
 
-					std::string filename("chart" + std::to_string(chunk) + ".csv");
 					if(w == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
 						fclose(fp_w);
