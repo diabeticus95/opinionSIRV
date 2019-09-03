@@ -29,25 +29,6 @@ int main() {
 	std::cout<<"Tworzenie sieci ER trwa³o "<<time_elapsed<<std::endl;
 
 
-
-	//begin = clock();
-	//int b, int w, Network sirv, Network opinion, int size
-
-
-	//end = clock();
-
-	/*Simulation sim(0.1, 0.1, (double)10/11, (double)1/11, sirv, opinion, size);
-	std::cout<<"feature arrays"<<std::endl;
-	sim.print_feature_arrays();
-
-
-	sim.print_state_counts();
-	sim.print_opinion_counts();
-	sim.iterate_sirv();
-	sim.iterate_opinion();
-	sim.print_state_counts();
-	sim.print_opinion_counts();*/
-
 	begin = clock();
 
 /*
@@ -74,7 +55,7 @@ int main() {
 				std::cout << sim->get_recovered_number() << std::endl;
 			}
 			while (sim->get_recovered_number() <= cutoff);
-			
+
 			std::string filename("chart1.csv");
 			if(w == 0 && b == 0) sim->print_for_charts(filename, true, days);
 			else sim->print_for_charts(filename, false, days);
@@ -90,16 +71,29 @@ int main() {
 	for(int i = 0; i < 18; i++){
 			 neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
 		}
+	std::string filename("chart1.csv");
+	FILE* fp_w = fopen(filename.c_str(), "w");
+	FILE* fp_a = fopen(filename.c_str(), "a");
+
 	for (int i = 0; i < 100; i++){
+		int days = 0;
 		Network sirv(size, p);
 		Network opinion(size, p);
 		Simulation sim(0.1,0.5, (double)1 / 11, (double)10 / 11, sirv, opinion, size, neighbor_dist);
-		std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
-		sir_iter += sim.get_sir_iter();
-		op_iter += sim.get_op_iter();
+		sim.iterate_until_end_of_epidemy();
+		if(i == 0) {
+			sim.print_for_charts(fp_w, true, days);
+			fclose(fp_w);
+		}
+		else sim.print_for_charts(fp_a, false, days);
+
+		//std::cout<<sim.iterate_until_end_of_epidemy()<<"   "<<sim.get_recovered_number()<<std::endl;
+		//sir_iter += sim.get_sir_iter();
+		//op_iter += sim.get_op_iter();
 	}
-	std::cout<<"sir iter final"<<sir_iter/100<<std::endl;
-	std::cout<<"op iter final"<<op_iter/100<<std::endl;
+	fclose(fp_a);
+	//std::cout<<"sir iter final"<<sir_iter/100<<std::endl;
+	//std::cout<<"op iter final"<<op_iter/100<<std::endl;
 
 
 

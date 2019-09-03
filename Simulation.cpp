@@ -288,13 +288,10 @@ void Simulation::print_for_charts(std::string filename, bool first_run){
 	fprintf(fp, "%d,%d,%d,%d,%d,%d,%d,%d\n", S,I,R,V,opinion_counts[0], opinion_counts[1], opinion_counts[2], opinion_counts[3]);
 	fclose(fp);
 }
-void Simulation::print_for_charts(std::string filename, bool first_run, int days){
-	FILE *fp;
+void Simulation::print_for_charts(FILE* fp, bool first_run, int days){
 	if(first_run){
-		fp = fopen(filename.c_str(), "w");
 		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%c,%c\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", 'w', 'b');
 	}
-	else fp = fopen(filename.c_str(), "a");
 
 	int opinion_counts[4];
 	for(int i = 0; i < 4; i++) opinion_counts[i] = 0;
@@ -311,5 +308,4 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int days
 			else if(states[i] == 'V') V++;
 	}
 	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, w, b);
-	fclose(fp);
 }
