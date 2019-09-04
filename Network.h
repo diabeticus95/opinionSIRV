@@ -7,7 +7,7 @@
 
 class Network {
 public:
-	Network(int size, double p);
+	Network(int size, double p, std::mt19937 &mt);
 	virtual ~Network();
 	void print_all_links();
 	double get_mean_k();

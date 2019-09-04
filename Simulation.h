@@ -10,7 +10,7 @@
 
 class Simulation {
 public:
-	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::uniform_int_distribution<int> neighbor_dist[18]);
+	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size,std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
