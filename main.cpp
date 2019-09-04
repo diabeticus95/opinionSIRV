@@ -21,11 +21,11 @@ int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
 	double p = (double)4/size;
-	int cutoff = 30;
+	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 
 	time_t begin = clock();
-	int n_of_chunks = std::thread::hardware_concurrency();
+	const unsigned int n_of_chunks = 40;
 	std::thread threads_array[n_of_chunks];
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		int seed = seeds(mt);
@@ -49,7 +49,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	for(int i = 0; i < 18; i++){
 		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
 	}
-	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
+	for(unsigned int rep = 0; rep < 40/40; rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
 			for (double w = 0; w < 1; w+=0.1){
