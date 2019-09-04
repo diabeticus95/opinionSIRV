@@ -64,7 +64,6 @@ void Simulation::vaccinate(int& i){
 }
 
 void Simulation::die(int& i){
-	states[i] = 'R';
 	states_tmp[i] = 'R';
 }
 
