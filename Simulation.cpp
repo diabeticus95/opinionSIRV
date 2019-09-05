@@ -81,7 +81,7 @@ void Simulation::infection_trial(int& i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
-			opinions_tmp[i] = -2;
+			opinions_tmp[i] = -3;
 		}
 	}
 	else{
@@ -160,6 +160,10 @@ void Simulation::iterate_opinion(){
 			std::cout<<"agent "<<i<<" with opinion" <<agent_opinion<<std::endl;
 		}
 		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		if (opinions_tmp[i] == -3){
+			opinions_tmp[i] = -2;
+			continue;
+		}
 		for(auto n : opinion.get_neighbors(i)){
 			if(debug) std::cout<<"neighbor "<<n<<std::endl;
 			if(can_interact(agent_opinion, n)){

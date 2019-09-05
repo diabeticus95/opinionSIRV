@@ -1,6 +1,6 @@
 
 # w network sprobowac wywalic unordered sety, i zrobic to na arrayach, albo wektorach z recznym sprawdzaniem
 	
-# zamiast tworzyc dist za kazdym razem moge stworzyc z palca 20 i tylko powyzej uzywac
-
-# wypisywanie do pliku - moge tworzyc poza metod¹ dwa uchwyty do pliku i przekazywac, zamiast tworzyc za kazdym razem
+# to nie kwestia rnd
+# to nie kwestia cutoff
+# to nie kwestia tmp w infection trial
