@@ -52,7 +52,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			for (double w = 0; w < 1; w+=0.1){
+			for (double w = 0; w < 1; w+=0.02){
 				for (int b = 0; b < 5; b++){
 					clock_t iter_begin = clock();
 					double b_c = 0.1;
