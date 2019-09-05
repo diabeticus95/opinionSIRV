@@ -21,7 +21,7 @@ int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
 	double p = (double)4/size;
-	int cutoff = 30;
+	int cutoff = 200;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 
 	time_t begin = clock();
@@ -61,22 +61,26 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else if(b == 3) b_c = 0.6;
 					else if(b == 4) b_c = 0.8;
 					Simulation* sim;
-					int counter = 0;
+					int swap_counter = 0;
+					int abandon_counter = 0;
 					int days = 0;
 					do {
-						if (counter > 0) delete sim;
-						if(counter > 50){
+						if(abandon_counter > 4) break;
+						if(swap_counter > 0) delete sim;
+						if(swap_counter > 50){
 							delete sirv; delete opinion;
 							sirv = new Network(size, p, mt);
 							opinion = new Network(size, p, mt);
 							std::cout<<"swapping networks"<<std::endl;
-							counter = 1;
+							swap_counter = 0;
+							abandon_counter++;
 						}
-						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, w, (double)1/11, (double)10/11, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
-						counter++;
+						swap_counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
+					if(abandon_counter > 4) continue;
 
 					if(w == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
