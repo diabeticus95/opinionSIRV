@@ -31,6 +31,10 @@ int main() {
 	for(int i = 0; i < 18; i++){
 		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
 	}
+	/*Network sirv(size, p, mt); Network op(size, p, mt);
+	Simulation sim(0.8, 0.05, (double)1 / 11, (double)10 / 11, sirv, op, size, mt, neighbor_dist);
+	sim.iterate_until_end_of_epidemy();*/
+
 	for(unsigned int rep = 0; rep < 1; rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
@@ -77,6 +81,8 @@ int main() {
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
 	return 0;
+
+
 }
 
 

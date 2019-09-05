@@ -81,7 +81,7 @@ void Simulation::infection_trial(int& i){
 		if(rnd <(1-w)*b){
 			get_sick(i);
 			opinions[i] = -2;
-			opinions_tmp[i] = -2;
+			opinions_tmp[i] = -3;
 		}
 	}
 	else{
@@ -98,7 +98,6 @@ bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 
 void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_opinion){
 	double trigger = infection_dist(rand);
-
     if ((agent_opinion == 1 && neighbor_opinion > 0) && trigger < p){
       opinions_tmp[agent_index] = 2;
       vaccinate(agent_index);
@@ -115,6 +114,7 @@ void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_op
 
 void Simulation::iterate_sirv(){
 // kill off agents sick for dying period
+	//print_opinion_counts();
 	bool debug = false;
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'I'){
@@ -125,7 +125,6 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -139,18 +138,18 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
-	clock_t end = clock();
-	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
-	for(int i = 0; i < size; i++){
-		states[i] = states_tmp[i];
-	}
+	 for(int i = 0; i < size; i++){
+		 states[i] = states_tmp[i];
+	 }
+	// std::cout<<"rage c "<<rage_counter<<std::endl;
+	// print_opinion_counts();
+	// rage_counter = 0;
+
 }
 
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
-	clock_t begin = clock();
-
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
 	int interaction_neighbor_opinion = 0;
@@ -160,6 +159,10 @@ void Simulation::iterate_opinion(){
 			std::cout<<"agent "<<i<<" with opinion" <<agent_opinion<<std::endl;
 		}
 		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		if (opinions_tmp[i] == -3){
+			opinions_tmp[i] = -2;
+			continue;
+		}
 		for(auto n : opinion.get_neighbors(i)){
 			if(debug) std::cout<<"neighbor "<<n<<std::endl;
 			if(can_interact(agent_opinion, n)){
@@ -187,31 +190,20 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
-	clock_t end = clock();
-	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
+
 
 }
 int Simulation::iterate_until_end_of_epidemy(){
 	int i = 0;
 	int debug = false;
 	while(get_sick_number()){
+		if(!i)print_for_charts("op_debug.csv", true);
+		else print_for_charts("op_debug.csv", false);
 		iterate_sirv();
 		if(debug) print_state_counts();
 		iterate_opinion();
 		i++;
 	}
-	/*for(auto &time : sir_time){
-		sir_iter += time;
-	}
-	for(auto &time : op_time){
-		op_iter += time;
-	}
-	sir_iter /= sir_time.size();
-	op_iter /= op_time.size();
-
-	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
-	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
-
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -219,6 +211,12 @@ int Simulation::get_sick_number(){
 	for(int i = 0; i < size; i++)
 			if(states[i] == 'I') I++;
 	return I;
+}
+int Simulation::get_vac_number(){
+	int V = 0;
+	for(int i = 0; i < size; i++)
+			if(states[i] == 'V') V++;
+	return V;
 }
 
 int Simulation::get_recovered_number(){ //for cutoff
@@ -228,12 +226,7 @@ int Simulation::get_recovered_number(){ //for cutoff
 	}
 	return R;
 }
-double Simulation::get_sir_iter(){
-	return sir_iter;
-}
-double Simulation::get_op_iter(){
-	return op_iter;
-}
+
 
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){
@@ -260,7 +253,9 @@ void Simulation::print_opinion_counts(){
 			else if(opinions[i] == 1) opinion_counts[2]++;
 			else if(opinions[i] == 2) opinion_counts[3]++;
 	}
-	std::cout<<"-2 = "<<(double)opinion_counts[0]/size<<", -1 = "<<(double)opinion_counts[1]/size<<", 1 = "<<(double)opinion_counts[2]/size<<", 2 = "<<(double)opinion_counts[3]/size<<std::endl;
+	//std::cout<<"-2 = "<<(double)opinion_counts[0]/size<<", -1 = "<<(double)opinion_counts[1]/size<<", 1 = "<<(double)opinion_counts[2]/size<<", 2 = "<<(double)opinion_counts[3]/size<<std::endl;
+	std::cout<<"-2 = "<<(double)opinion_counts[0]<<", -1 = "<<(double)opinion_counts[1]<<", 1 = "<<(double)opinion_counts[2]<<", 2 = "<<(double)opinion_counts[3]<<std::endl;
+
 }
 
 void Simulation::print_for_charts(std::string filename, bool first_run){
