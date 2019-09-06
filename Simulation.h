@@ -43,6 +43,11 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
+	int m2tom1;
+	int m1top1;
+	int p1tom1;
+	int m2caused;
+	int p2caused;
 
 	void init_states();
 	void init_opinions();

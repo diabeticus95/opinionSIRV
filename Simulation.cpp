@@ -105,10 +105,15 @@ void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_op
     	opinions_tmp[agent_index] = -2;
     } else if ((agent_opinion == 1 && neighbor_opinion < 0) && trigger < q){
     	opinions_tmp[agent_index] = -1;
+    	p1tom1++;
+    	if(neighbor_opinion == -2) m2caused++;
     } else if ((agent_opinion == -1 && neighbor_opinion > 0) && trigger < q){
     	opinions_tmp[agent_index]= 1;
+    	m1top1++;
+    	if(neighbor_opinion == 2) m2caused++;
     } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q){
     	opinions_tmp[agent_index] = -1;
+    	m2tom1++;
     }
 }
 
@@ -204,6 +209,8 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
+	std::cout<<"-2 to -1 count: "<<m2tom1<<" -1 to 1 count: "<<m1top1<<" 1 to -1 count: "<<p1tom1<<std::endl;
+	std::cout<<" -2 caused 1 to -1 "<<m2caused<<" +2 caused -1 to 1 "<<m2caused<<std::endl;
 	return i;
 }
 int Simulation::get_sick_number(){
