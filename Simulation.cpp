@@ -125,7 +125,6 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			bool sick_neighbor = 0;
@@ -139,8 +138,6 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor) infection_trial(i);
 		}
 	}
-	clock_t end = clock();
-	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -149,7 +146,6 @@ void Simulation::iterate_sirv(){
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
-	clock_t begin = clock();
 
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
@@ -191,8 +187,6 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
-	clock_t end = clock();
-	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 
 }
 int Simulation::iterate_until_end_of_epidemy(){
