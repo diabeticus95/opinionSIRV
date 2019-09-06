@@ -204,17 +204,6 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	/*for(auto &time : sir_time){
-		sir_iter += time;
-	}
-	for(auto &time : op_time){
-		op_iter += time;
-	}
-	sir_iter /= sir_time.size();
-	op_iter /= op_time.size();
-
-	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
-	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
 
 	return i;
 }
@@ -231,12 +220,6 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
-}
-double Simulation::get_sir_iter(){
-	return sir_iter;
-}
-double Simulation::get_op_iter(){
-	return op_iter;
 }
 
 void Simulation::print_feature_arrays(){
