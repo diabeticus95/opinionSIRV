@@ -45,9 +45,9 @@ void Simulation::get_sick(int& i){
 
 void Simulation::infection_trial(int& i, int& sick){
 	//bool debug = false;
-	double rnd = infection_dist(rand);
 	if(states[i] == 'S'){
 		for(int j = 0; j < sick; j++){
+			double rnd = infection_dist(rand);
 			if(rnd < b){
 				get_sick(i);
 				return;

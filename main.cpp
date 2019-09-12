@@ -20,7 +20,7 @@ using namespace std;
 int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
-	double p = (double)100/size;
+	double p = (double)50/size;
 	int cutoff = 2;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 
@@ -44,8 +44,8 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	Network sir(size, p, mt);
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
-		double b = 0.1;
-		double y = 0.1;
+		double b = 0.01;
+		double y = 0.15;
 		Simulation sim(b, y, sir, size, mt, chunk);
 		sim.iterate_until_end_of_epidemy();
 	}
