@@ -38,7 +38,7 @@ private:
 	void init_states();
 	void recover_trial(int& i);
 	void get_sick(int& i);
-	void infection_trial(int& i);
+	void infection_trial(int& i, int& sick);
 	int get_sick_number();
 
 };

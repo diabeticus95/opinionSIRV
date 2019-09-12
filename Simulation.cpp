@@ -36,18 +36,23 @@ void Simulation::init_states(){
 
 void Simulation::recover_trial(int& i){
 	double rnd = infection_dist(rand);
-	if(rnd < y)	states_tmp[i] = 'S';
+	if(rnd < y)	states_tmp[i] = 'R';
 }
 
 void Simulation::get_sick(int& i){
 	states_tmp[i] = 'I';
 }
 
-void Simulation::infection_trial(int& i){
+void Simulation::infection_trial(int& i, int& sick){
 	//bool debug = false;
 	double rnd = infection_dist(rand);
 	if(states[i] == 'S'){
-		if(rnd < b) get_sick(i);
+		for(int j = 0; j < sick; j++){
+			if(rnd < b){
+				get_sick(i);
+				return;
+			}
+		}
 	}
 	else{
 		std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
@@ -59,23 +64,19 @@ void Simulation::infection_trial(int& i){
 void Simulation::iterate_sirv(){
 // kill off agents sick for dying period
 	bool debug = false;
-	for(int i = 0; i < size; i++){
-		if(states[i] == 'I'){
-			recover_trial(i);
-		}
-	}
 // epidemy trial
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S'){
-			bool sick_neighbor = 0;
+			int sick_neighbor = 0;
 			for(auto s : sirv.get_neighbors(i)){
 				if(states[s] == 'I'){
-					sick_neighbor = true;
-					if(debug) std::cout<<"sick neighbor for node "<<i<<std::endl;
-					break;
+					sick_neighbor++;
 				}
 			}
-			if(sick_neighbor) infection_trial(i);
+			if(sick_neighbor > 0) infection_trial(i, sick_neighbor);
+		}
+		else if(states[i] == 'I'){
+			recover_trial(i);
 		}
 	}
 	for(int i = 0; i < size; i++){
@@ -88,7 +89,8 @@ int Simulation::iterate_until_end_of_epidemy(){
 	int debug = false;
 	std::string filename(std::to_string(chunk) + "chart.csv");
 	while(get_sick_number()){
-		if(i == 0 && b == 0.3 && y == 0.1) print_for_charts(filename, true, i);
+		//if(i == 0 && b == 0.4 && y == 0.4) print_for_charts(filename, true, i);
+		if(i == 0) print_for_charts(filename, true, i);
 		print_for_charts(filename, false, i);
 		iterate_sirv();
 		i++;
@@ -123,7 +125,7 @@ void Simulation::print_for_charts(std::string filename, bool first_run, int i){
 	FILE* fp;
 	if(first_run){
 		fp = fopen(filename.c_str(), "w");
-		fprintf(fp, "%c,%c,%c,%c,%c, %d\n", 'S', 'I', 'R', 'b', 'y', 'lp');
+		fprintf(fp, "%c,%c,%c,%c,%c,%s\n", 'S', 'I', 'R', 'b', 'y', "lp");
 	}
 	else fp = fopen(filename.c_str(), "a");
 	int I = 0; int S = 0; int R = 0;
