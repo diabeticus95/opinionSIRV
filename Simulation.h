@@ -49,7 +49,7 @@ private:
 	void vaccinate(int& i);
 	void die(int& i);
 	void get_sick(int& i);
-	void infection_trial(int& i);
+	void infection_trial(int& i, int& sick_num);
 	bool can_interact(int& agent_opinion, int& neighbor_index);
 	void interact(int& agent_index, int& agent_opinion, int& neighbor_opinion);
 	int get_sick_number();

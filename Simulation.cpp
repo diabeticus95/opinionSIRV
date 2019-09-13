@@ -71,23 +71,30 @@ void Simulation::get_sick(int& i){
 	states_tmp[i] = 'I';
 }
 
-void Simulation::infection_trial(int& i){
+void Simulation::infection_trial(int& i, int& sick_num){
 	//bool debug = false;
-	double rnd = infection_dist(rand);
-	if(states[i] == 'S'){
-		if(rnd < b) get_sick(i);
-	}
-	else if(states[i] == 'V'){
-		if(rnd <(1-w)*b){
-			get_sick(i);
-			opinions[i] = -2;
-			opinions_tmp[i] = -3;
+	for(int j = 0; j < sick_num; j++){
+		double rnd = infection_dist(rand);
+		if(states[i] == 'S'){
+			if(rnd < b){
+				get_sick(i);
+				return;
+			}
+		}
+		else if(states[i] == 'V'){
+			if(rnd <(1-w)*b){
+				get_sick(i);
+				opinions[i] = -2;
+				opinions_tmp[i] = -3;
+				return;
+			}
+		}
+		else{
+			std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
+			exit(-10);
 		}
 	}
-	else{
-		std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
-		exit(-10);
-	}
+
 }
 
 bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
@@ -127,15 +134,14 @@ void Simulation::iterate_sirv(){
 // epidemy trial
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
-			bool sick_neighbor = 0;
+			int sick_neighbor = 0;
 			for(auto s : sirv.get_neighbors(i)){
 				if(states[s] == 'I'){
-					sick_neighbor = true;
+					sick_neighbor++;
 					if(debug) std::cout<<"sick neighbor for node "<<i<<std::endl;
-					break;
 				}
 			}
-			if(sick_neighbor) infection_trial(i);
+			if(sick_neighbor > 0) infection_trial(i, sick_neighbor);
 		}
 	}
 	for(int i = 0; i < size; i++){

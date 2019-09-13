@@ -21,7 +21,7 @@ int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
 	double p = (double)4/size;
-	int cutoff = 200;
+	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 
 	time_t begin = clock();
@@ -65,7 +65,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					int abandon_counter = 0;
 					int days = 0;
 					do {
-						if(abandon_counter > 4) break;
+						if(abandon_counter > 2) break;
 						if(swap_counter > 0) delete sim;
 						if(swap_counter > 50){
 							delete sirv; delete opinion;
@@ -89,7 +89,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
+					std::cout << "iteration no. " << (250*rep) + 250*w + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
 					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 				}
 			}
