@@ -14,9 +14,6 @@
 #include "string"
 #include <thread>
 
-
-using namespace std;
-
 int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
@@ -75,7 +72,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, w, (double)1/11, (double)10/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, w, (double)10/11, (double)1/11, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}
