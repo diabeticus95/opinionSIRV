@@ -7,8 +7,8 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
-	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
+	b(b), z(z), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
@@ -58,8 +58,11 @@ void Simulation::init_opinions(){
 
 void Simulation::vaccinate(int& i){
 	if(states[i] == 'S'){
-		states[i] = 'V';
-		states_tmp[i] = 'V';
+		double rnd = infection_dist(rand);
+		if(rnd < z){
+			states[i] = 'V';
+			states_tmp[i] = 'V';
+		}
 	}
 }
 
@@ -276,7 +279,7 @@ void Simulation::print_for_charts(std::string filename, bool first_run){
 }
 void Simulation::print_for_charts(FILE* fp, bool first_run, int days){
 	if(first_run){
-		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%c,%c\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", 'w', 'b');
+		fprintf(fp, "%c,%c,%c,%c,%s,%s,%s,%s,%s,%c,%c\n", 'S', 'I', 'R', 'V', "-2", "-1", "1", "2", "days", 'z', 'b');
 	}
 
 	int opinion_counts[4];
@@ -293,5 +296,5 @@ void Simulation::print_for_charts(FILE* fp, bool first_run, int days){
 			else if(states[i] == 'R') R++;
 			else if(states[i] == 'V') V++;
 	}
-	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, w, b);
+	fprintf(fp, "%f,%f,%f,%f,%f,%f,%f,%f,%d,%f,%f\n", (double)S/size,(double)I/size,(double)R/size,(double)V/size,(double)opinion_counts[0]/size, (double)opinion_counts[1]/size, (double)opinion_counts[2]/size, (double)opinion_counts[3]/size, days, z, b);
 }

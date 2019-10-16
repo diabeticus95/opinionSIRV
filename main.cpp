@@ -43,7 +43,7 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart" + std::to_string(chunk) + ".csv");
+	std::string filename("chart_var4_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
@@ -52,7 +52,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			for (double w = 0; w < 1; w+=0.02){
+			for (double z = 0; z < 1; z+=0.02){
 				for (int b = 0; b < 5; b++){
 					clock_t iter_begin = clock();
 					double b_c = 0.1;
@@ -75,21 +75,21 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, w, (double)1/11, (double)10/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, z, (double)10/11, (double)1/11, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
 					if(abandon_counter > 4) continue;
 
-					if(w == 0 && b == 0 && rep == 0){
+					if(z == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
 						fclose(fp_w);
 					}
 					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (250*rep) + 250*w + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
+					std::cout << "iteration no. " << (250*rep) + 250*z + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
 					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 				}
 			}
