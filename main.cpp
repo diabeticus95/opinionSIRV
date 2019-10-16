@@ -14,9 +14,6 @@
 #include "string"
 #include <thread>
 
-
-using namespace std;
-
 int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
