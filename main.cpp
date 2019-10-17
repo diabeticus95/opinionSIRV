@@ -24,7 +24,7 @@ int main() {
 	time_t begin = clock();
 
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart1.csv");
+	std::string filename("chart_op.csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
@@ -33,43 +33,37 @@ int main() {
 	for(unsigned int rep = 0; rep < 1; rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			for (double w = 0; w < 1; w+=0.1){
-				for (int b = 0; b < 5; b++){
-					clock_t iter_begin = clock();
-					double b_c = 0.1;
-					if (b == 1) b_c = 0.2;
-					else if(b == 2) b_c = 0.4;
-					else if(b == 3) b_c = 0.6;
-					else if(b == 4) b_c = 0.8;
-					Simulation* sim;
-					int counter = 0;
-					int days = 0;
-					do {
-						if (counter > 0) delete sim;
-						if(counter > 50){
-							delete sirv; delete opinion;
-							sirv = new Network(size, p, mt);
-							opinion = new Network(size, p, mt);
-							std::cout<<"swapping networks"<<std::endl;
-							counter = 1;
-						}
-						sim = new Simulation(b_c, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
-						days = sim->iterate_until_end_of_epidemy();
-						counter++;
-					}
-					while (sim->get_recovered_number() <= cutoff);
-
-					if(w == 0 && b == 0 && rep == 0){
-						sim->print_for_charts(fp_w, true, days);
-						fclose(fp_w);
-					}
-					else sim->print_for_charts(fp_a, false, days);
-					delete sim;
-					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
-					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
+			double w = 0.95;
+			double b = 0.9;
+			clock_t iter_begin = clock();
+			Simulation* sim;
+			int counter = 0;
+			int days = 0;
+			do {
+				if (counter > 0) delete sim;
+				if(counter > 50){
+					delete sirv; delete opinion;
+					sirv = new Network(size, p, mt);
+					opinion = new Network(size, p, mt);
+					std::cout<<"swapping networks"<<std::endl;
+					counter = 1;
 				}
+				sim = new Simulation(b, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
+				days = sim->iterate_until_end_of_epidemy();
+				counter++;
 			}
+			while (sim->get_recovered_number() <= cutoff);
+
+			if(w == 0 && b == 0 && rep == 0){
+				sim->print_for_charts(fp_w, true, days);
+				fclose(fp_w);
+			}
+			else sim->print_for_charts(fp_a, false, days);
+			delete sim;
+			clock_t iter_end = clock();
+			std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
+			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
+
 	}
 	fclose(fp_a);
 	time_t end = clock();

@@ -207,6 +207,8 @@ int Simulation::iterate_until_end_of_epidemy(){
 	while(get_sick_number()){
 		iterate_sirv();
 		if(debug) print_state_counts();
+		if(i == 0)print_for_charts("chart_op.csv", true);
+		else print_for_charts("chart_op.csv", false);
 		iterate_opinion();
 		i++;
 	}
@@ -221,7 +223,6 @@ int Simulation::iterate_until_end_of_epidemy(){
 
 	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
 	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
-
 
 	return i;
 }
