@@ -71,23 +71,30 @@ void Simulation::get_sick(int& i){
 	states_tmp[i] = 'I';
 }
 
-void Simulation::infection_trial(int& i){
+void Simulation::infection_trial(int& i, int& sick_num){
 	//bool debug = false;
-	double rnd = infection_dist(rand);
-	if(states[i] == 'S'){
-		if(rnd < b) get_sick(i);
-	}
-	else if(states[i] == 'V'){
-		if(rnd <(1-w)*b){
-			get_sick(i);
-			opinions[i] = -2;
-			opinions_tmp[i] = -2;
+	for(int j = 0; j < sick_num; j++){
+		double rnd = infection_dist(rand);
+		if(states[i] == 'S'){
+			if(rnd < b){
+				get_sick(i);
+				return;
+			}
+		}
+		else if(states[i] == 'V'){
+			if(rnd <(1-w)*b){
+				get_sick(i);
+				opinions[i] = -2;
+				opinions_tmp[i] = -3;
+				return;
+			}
+		}
+		else{
+			std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
+			exit(-10);
 		}
 	}
-	else{
-		std::cerr<<"infection trial got a node with state "<<states[i]<<std::endl;
-		exit(-10);
-	}
+
 }
 
 bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
@@ -125,22 +132,18 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
-			bool sick_neighbor = 0;
+			int sick_neighbor = 0;
 			for(auto s : sirv.get_neighbors(i)){
 				if(states[s] == 'I'){
-					sick_neighbor = true;
+					sick_neighbor++;
 					if(debug) std::cout<<"sick neighbor for node "<<i<<std::endl;
-					break;
 				}
 			}
-			if(sick_neighbor) infection_trial(i);
+			if(sick_neighbor > 0) infection_trial(i, sick_neighbor);
 		}
 	}
-	clock_t end = clock();
-	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -149,7 +152,6 @@ void Simulation::iterate_sirv(){
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
-	clock_t begin = clock();
 
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
@@ -160,6 +162,10 @@ void Simulation::iterate_opinion(){
 			std::cout<<"agent "<<i<<" with opinion" <<agent_opinion<<std::endl;
 		}
 		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		if (opinions_tmp[i] == -3){
+			opinions_tmp[i] = -2;
+			continue;
+		}
 		for(auto n : opinion.get_neighbors(i)){
 			if(debug) std::cout<<"neighbor "<<n<<std::endl;
 			if(can_interact(agent_opinion, n)){
@@ -187,8 +193,6 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
-	clock_t end = clock();
-	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 
 }
 int Simulation::iterate_until_end_of_epidemy(){
@@ -200,17 +204,6 @@ int Simulation::iterate_until_end_of_epidemy(){
 		iterate_opinion();
 		i++;
 	}
-	/*for(auto &time : sir_time){
-		sir_iter += time;
-	}
-	for(auto &time : op_time){
-		op_iter += time;
-	}
-	sir_iter /= sir_time.size();
-	op_iter /= op_time.size();
-
-	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
-	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
 
 	return i;
 }
@@ -227,12 +220,6 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
-}
-double Simulation::get_sir_iter(){
-	return sir_iter;
-}
-double Simulation::get_op_iter(){
-	return op_iter;
 }
 
 void Simulation::print_feature_arrays(){
