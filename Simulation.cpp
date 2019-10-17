@@ -42,15 +42,24 @@ void Simulation::init_states(){
 }
 
 void Simulation::init_opinions(){
-    std::uniform_int_distribution<int> dist(0, 3);
+    std::uniform_int_distribution<int> dist(0, 1);
     for (int i = 0; i < size; i++){
-    	int rnd = dist(rand);
-    	if(rnd == 0) opinions[i] = -2;
-    	else if(rnd == 1) opinions[i] = -1;
-    	else if(rnd == 2) opinions[i] = 1;
-    	else if(rnd == 3){
-    		opinions[i] = 2;
-    		vaccinate(i);
+    	double rnd = infection_dist(rand);
+    	int rnd_2 = dist(rand);
+    	if(rnd < 0.87){
+    		if(rnd_2 == 0){
+    			opinions[i] = 2;
+        		vaccinate(i);
+    		}
+    		else
+    			opinions[i] = 1;
+    	}
+    	else{
+    		if(rnd_2 == 0){
+    			opinions[i] = -2;
+    		}
+    		else
+    			opinions[i] = -1;
     	}
     }
 }

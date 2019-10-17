@@ -48,7 +48,7 @@ int main() {
 					std::cout<<"swapping networks"<<std::endl;
 					counter = 1;
 				}
-				sim = new Simulation(b, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
+				sim = new Simulation(b, w, (double)10 / 11, (double)1 / 11, *sirv, *opinion, size, mt, neighbor_dist);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;
 			}
