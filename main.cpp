@@ -13,6 +13,7 @@
 #include "Simulation.h"
 #include <string>
 
+
 using namespace std;
 
 int main() {
@@ -25,6 +26,7 @@ int main() {
 
 	std::uniform_int_distribution<int> neighbor_dist[18];
 	std::string filename("chart_op.csv");
+
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){

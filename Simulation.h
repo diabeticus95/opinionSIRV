@@ -10,17 +10,13 @@
 
 class Simulation {
 public:
-	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size,std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
+	Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
 	void iterate_opinion();
 	int iterate_until_end_of_epidemy(); //returns number of days until end of epidemy
 	int get_recovered_number();	//used to implement cutoff
-	double get_sir_iter();
-	double get_op_iter();
-
-
 	void print_state_counts();
 	void print_opinion_counts();
 	void print_for_charts(std::string filename, bool first_run);
@@ -33,7 +29,8 @@ private:
 	std::uniform_int_distribution<int>* neighbor_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
-	double w; // omega vax efficiency coefficient
+	double w = 0.99; // szczepionka skojarzona MMR przeciw odrze, œwince i ró¿yczce
+	double z; // random antivax events
 	double p; // extremization coefficient;
 	double q; // moderation coefficient
 	double r; //personality ratio
