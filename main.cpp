@@ -35,7 +35,7 @@ int main() {
 	for(unsigned int rep = 0; rep < 1; rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			double w = 0.95;
+			double z = 0.05;
 			double b = 0.9;
 			clock_t iter_begin = clock();
 			Simulation* sim;
@@ -50,20 +50,14 @@ int main() {
 					std::cout<<"swapping networks"<<std::endl;
 					counter = 1;
 				}
-				sim = new Simulation(b, w, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
+				sim = new Simulation(b, z, (double)1 / 11, (double)10 / 11, *sirv, *opinion, size, mt, neighbor_dist);
 				days = sim->iterate_until_end_of_epidemy();
 				counter++;
 			}
 			while (sim->get_recovered_number() <= cutoff);
 
-			if(w == 0 && b == 0 && rep == 0){
-				sim->print_for_charts(fp_w, true, days);
-				fclose(fp_w);
-			}
-			else sim->print_for_charts(fp_a, false, days);
 			delete sim;
 			clock_t iter_end = clock();
-			std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << counter - 1 << " times" << std::endl;
 			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 
 	}
