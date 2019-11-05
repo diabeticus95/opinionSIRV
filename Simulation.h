@@ -42,10 +42,6 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
-	std::vector<double> sir_time;
-	std::vector<double> op_time;
-	double sir_iter = 0;
-	double op_iter = 0;
 
 	void init_states();
 	void init_opinions();

@@ -149,7 +149,6 @@ void Simulation::iterate_sirv(){
 		}
 	}
 	clock_t end = clock();
-	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -228,13 +227,6 @@ int Simulation::get_recovered_number(){ //for cutoff
 	}
 	return R;
 }
-double Simulation::get_sir_iter(){
-	return sir_iter;
-}
-double Simulation::get_op_iter(){
-	return op_iter;
-}
-
 void Simulation::print_feature_arrays(){
 	for(int i = 0; i < size; i++){
 		std::cout<<opinions[i]<<"   "<<states[i]<<std::endl;
