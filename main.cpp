@@ -43,7 +43,7 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart_var5_chunk" + std::to_string(chunk) + ".csv");
+	std::string filename("chart_var5_z_fixed_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
@@ -52,7 +52,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			for (double z = 0; z < 1; z+=0.02){
+			for (int lag = 0; lag < 100; lag+=1){
 				for (int b = 0; b < 5; b++){
 					clock_t iter_begin = clock();
 					double b_c = 0.1;
@@ -60,7 +60,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else if(b == 2) b_c = 0.4;
 					else if(b == 3) b_c = 0.6;
 					else if(b == 4) b_c = 0.8;
-					int lag = 9;
+					double z = 0.9;
 					Simulation* sim;
 					int swap_counter = 0;
 					int abandon_counter = 0;
@@ -90,7 +90,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (250*rep) + 250*z + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
+					std::cout << "iteration no. " << (250*rep) + 100*lag + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
 					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 				}
 			}
