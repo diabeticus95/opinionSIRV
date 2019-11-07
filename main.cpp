@@ -52,7 +52,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
-			for (int lag = 0; lag < 100; lag+=1){
+			for (int lag = 0; lag < 20; lag+=1){
 				for (int b = 0; b < 5; b++){
 					clock_t iter_begin = clock();
 					double b_c = 0.1;
@@ -90,7 +90,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (250*rep) + 100*lag + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
+					std::cout << "iteration no. " << (250*rep) + 5*lag + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
 					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 				}
 			}
