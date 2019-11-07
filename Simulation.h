@@ -10,7 +10,7 @@
 
 class Simulation {
 public:
-	Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
+	Simulation(double b, double z, int lag, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
@@ -33,6 +33,7 @@ private:
 	double b; // bheta getting sick coefficient
 	double w = 0.99; // szczepionka skojarzona MMR przeciw odrze, œwince i ró¿yczce
 	double z; // random antivax events
+	int lag; //vaccination delay if not succeded
 	double p; // extremization coefficient;
 	double q; // moderation coefficient
 	double r; //personality ratio
@@ -44,6 +45,7 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
+	int* lag_left;
 
 	void init_states();
 	void init_opinions();
@@ -54,6 +56,7 @@ private:
 	bool can_interact(int& agent_opinion, int& neighbor_index);
 	void interact(int& agent_index, int& agent_opinion, int& neighbor_opinion);
 	int get_sick_number();
+	void vacc_after_lag();
 
 };
 

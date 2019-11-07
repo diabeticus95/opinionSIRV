@@ -43,7 +43,7 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart_var4_chunk" + std::to_string(chunk) + ".csv");
+	std::string filename("chart_var5_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
@@ -60,6 +60,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else if(b == 2) b_c = 0.4;
 					else if(b == 3) b_c = 0.6;
 					else if(b == 4) b_c = 0.8;
+					int lag = 9;
 					Simulation* sim;
 					int swap_counter = 0;
 					int abandon_counter = 0;
@@ -75,7 +76,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, z, (double)10/11, (double)1/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, z, lag, (double)1/11, (double)10/11, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}

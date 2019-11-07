@@ -7,14 +7,15 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
-	b(b), z(z), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double z, int lag, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
+	b(b), z(z), lag(lag), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
 	infection_dist = std::uniform_real_distribution<double>(0,1); //also opinion trigger
 	states = new char[size];
 	opinions = new int[size];
+	lag_left = new int[size];
 	states_tmp = new char[size];
 	opinions_tmp = new int[size];
 	sick_time = new int[size];
@@ -36,8 +37,10 @@ Simulation::~Simulation() {
 
 void Simulation::init_states(){
 	states[0] = 'I';
+	lag_left[0] = -1;
 	for (int i = 1; i < size; i++){
 		states[i] = 'S';
+		lag_left[i] = -1;
 	}
 }
 
@@ -62,6 +65,9 @@ void Simulation::vaccinate(int& i){
 		if(rnd < z){
 			states[i] = 'V';
 			states_tmp[i] = 'V';
+		}
+		else{
+			lag_left[i] = lag;
 		}
 	}
 }
@@ -196,8 +202,10 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
-
+	// let people try to vacc again
+	vacc_after_lag();
 }
+
 int Simulation::iterate_until_end_of_epidemy(){
 	int i = 0;
 	int debug = false;
@@ -210,6 +218,25 @@ int Simulation::iterate_until_end_of_epidemy(){
 
 	return i;
 }
+void Simulation::vacc_after_lag(){
+	//int counter = 0;
+
+	for(int i = 0; i < size; i++){
+		if(lag_left[i] > -1){
+			//counter++;
+			if(lag_left[i] == 0){
+				vaccinate(lag_left[i]);
+				lag_left[i] = -1;
+			}
+			else{
+				lag_left[i]--;
+			}
+		}
+	}
+	//std::cout<<"lag left ind 0: "<<lag_left[0]<<"  "<<counter<<std::endl;
+}
+
+
 int Simulation::get_sick_number(){
 	int I = 0;
 	for(int i = 0; i < size; i++)
