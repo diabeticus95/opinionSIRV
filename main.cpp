@@ -14,9 +14,6 @@
 #include "string"
 #include <thread>
 
-
-using namespace std;
-
 int main() {
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
 	int size = 100000;
@@ -43,7 +40,7 @@ int main() {
 void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart_var5_chunk" + std::to_string(chunk) + ".csv");
+	std::string filename("chart_var5_4_3_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){

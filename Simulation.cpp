@@ -109,6 +109,7 @@ void Simulation::infection_trial(int& i, int& sick_num){
 bool Simulation::can_interact(int& agent_opinion, int& neighbor_index){
 	int opinion_j = opinions[neighbor_index];
 	if(agent_opinion == -2 && opinion_j < 0) return false;
+	else if(agent_opinion == 2 && opinion_j > 0) return false;
 	else return true;
 }
 
@@ -126,6 +127,8 @@ void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_op
     	opinions_tmp[agent_index]= 1;
     } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q){
     	opinions_tmp[agent_index] = -1;
+    } else if ((agent_opinion == 2 && neighbor_opinion < 0) && trigger < q) {
+    	opinions_tmp[agent_index] = 1;
     }
 }
 
@@ -170,7 +173,7 @@ void Simulation::iterate_opinion(){
 		if(debug){
 			std::cout<<"agent "<<i<<" with opinion" <<agent_opinion<<std::endl;
 		}
-		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		//if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
 		if (opinions_tmp[i] == -3){
 			opinions_tmp[i] = -2;
 			continue;
