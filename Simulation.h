@@ -10,7 +10,7 @@
 
 class Simulation {
 public:
-	Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
+	Simulation(double b, double z, double p, double q, int zeal, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
@@ -31,11 +31,12 @@ private:
 	std::uniform_int_distribution<int>* neighbor_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
-	double w = 0.99; // szczepionka skojarzona MMR przeciw odrze, œwince i ró¿yczce
+	double w = 1; // uproszczenie dla var6
 	double z; // random antivax events
 	double p; // extremization coefficient;
 	double q; // moderation coefficient
 	double r; //personality ratio
+	int zeal; // number of zealots
 	Network& sirv;
 	Network& opinion;
 	int size;
@@ -44,6 +45,7 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
+	bool* zealots;
 
 	void init_states();
 	void init_opinions();

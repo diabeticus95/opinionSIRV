@@ -7,8 +7,8 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
-	b(b), z(z), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double z, double p, double q, int zeal, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
+	b(b), z(z), p(p), q(q), zeal(zeal), sirv(sirv), opinion(opinion), size(size){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
@@ -23,6 +23,7 @@ Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Ne
 	for(int i = 0; i < size; i++){
 		opinions_tmp[i] = opinions[i];
 		states_tmp[i] = states[i];
+		zealots[i] = 0;
 	}
 }
 
@@ -42,10 +43,17 @@ void Simulation::init_states(){
 }
 
 void Simulation::init_opinions(){
+	int counter = 0;
     std::uniform_int_distribution<int> dist(0, 3);
     for (int i = 0; i < size; i++){
     	int rnd = dist(rand);
-    	if(rnd == 0) opinions[i] = -2;
+    	if(rnd == 0){
+    		opinions[i] = -2;
+    		if(counter < zeal){
+    			zealots[i] = 1;
+    			counter++;
+    		}
+    	}
     	else if(rnd == 1) opinions[i] = -1;
     	else if(rnd == 2) opinions[i] = 1;
     	else if(rnd == 3){
@@ -165,6 +173,7 @@ void Simulation::iterate_opinion(){
 			std::cout<<"agent "<<i<<" with opinion" <<agent_opinion<<std::endl;
 		}
 		if (agent_opinion == 2) continue; //+2 cannot change opinion by interaction, only by getting sick
+		if (zealots[i] == 1) continue; //zealots cannot change opinion
 		if (opinions_tmp[i] == -3){
 			opinions_tmp[i] = -2;
 			continue;
