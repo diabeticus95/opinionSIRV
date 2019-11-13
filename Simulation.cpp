@@ -24,7 +24,6 @@ Simulation::Simulation(double b, double z, double p, double q, int zeal, Network
 	for(int i = 0; i < size; i++){
 		opinions_tmp[i] = opinions[i];
 		states_tmp[i] = states[i];
-		zealots[i] = 0;
 	}
 }
 
@@ -38,8 +37,10 @@ Simulation::~Simulation() {
 
 void Simulation::init_states(){
 	states[0] = 'I';
+	zealots[0] = 0;
 	for (int i = 1; i < size; i++){
 		states[i] = 'S';
+		zealots[i] = 0;
 	}
 }
 
