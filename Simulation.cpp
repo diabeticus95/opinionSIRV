@@ -18,6 +18,7 @@ Simulation::Simulation(double b, double z, double p, double q, int zeal, Network
 	states_tmp = new char[size];
 	opinions_tmp = new int[size];
 	sick_time = new int[size];
+	zealots = new bool[size];
 	init_states(); init_opinions(); zeruj(sick_time, size);
 	this->neighbor_dist = neighbor_dist;
 	for(int i = 0; i < size; i++){
