@@ -15,35 +15,52 @@
 #include <thread>
 
 
+
 using namespace std;
 
 int main() {
-	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
+	void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds, std::string filename_base,
+			double p_, double q);
 	int size = 100000;
 	double p = (double)4/size;
 	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
-
 	time_t begin = clock();
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r10_zeal100"), (double)1/11, (double)10/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r10_zeal1000"), (double)10/11, (double)1/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r10_zeal10000"), (double)10/11, (double)1/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r01_zeal100"), (double)1/11, (double)10/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r01_zeal1000"), (double)1/11, (double)10/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r01_zeal10000"), (double)1/11, (double)10/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r1_zeal100"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r1_zeal1000"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var6_r1_zeal10000"), (double)1/2, (double)1/2);
+
+
+	time_t end = clock();
+	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
+	std::cout<<"both iters "<<time_elapsed<<std::endl;
+
+	return 0;
+
+}
+
+void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds, std::string filename_base, double p_, double q, int zeal){
+	void simulate_parallel(int size, double p, int cutoff, int rep, int seed,std::string filename_base, double p_, double q, int zeal);
 	int n_of_chunks = std::thread::hardware_concurrency();
 	std::thread threads_array[n_of_chunks];
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		int seed = seeds(mt);
-	    threads_array[chunk] = std::thread(simulate_parallel,size, p, cutoff,  chunk, seed);
+	    threads_array[chunk] = std::thread(simulate_parallel,size, p, cutoff, chunk, seed, filename_base, p_, q, zeal);
 	}
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		threads_array[chunk].join();
 	}
-	time_t end = clock();
-	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"both iters "<<time_elapsed<<std::endl;
-	return 0;
-
 }
-void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
+void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std::string filename_base, double p_, double q, int zeal){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart_var4_chunk" + std::to_string(chunk) + ".csv");
+	std::string filename(filename_base + "_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
