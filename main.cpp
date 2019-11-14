@@ -87,7 +87,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, z, (double)10/11, (double)1/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, z, p_, q, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}
