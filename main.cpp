@@ -29,9 +29,7 @@ int main() {
 	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r01_w1"), (double)1/11, (double)10/11);
 	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r10_w1"), (double)10/11, (double)1/11);
 	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r1_w1"), (double)1/2, (double)1/2);
-
-
-
+	   
 	time_t end = clock();
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
 	std::cout<<"both iters "<<time_elapsed<<std::endl;
@@ -42,7 +40,7 @@ int main() {
 
 void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds, std::string filename_base, double p_, double q){
 	void simulate_parallel(int size, double p, int cutoff, int rep, int seed,std::string filename_base, double p_, double q);
-	int n_of_chunks = std::thread::hardware_concurrency();
+	const unsigned int n_of_chunks = 40;
 	std::thread threads_array[n_of_chunks];
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		int seed = seeds(mt);
@@ -61,7 +59,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 	for(int i = 0; i < 18; i++){
 		neighbor_dist[i] = std::uniform_int_distribution<int>(0,i+1);
 	}
-	for(unsigned int rep = 0; rep < 8/std::thread::hardware_concurrency(); rep++){
+	for(unsigned int rep = 0; rep < 40/40; rep++){
 		Network* sirv = new Network(size, p, mt);
 		Network* opinion = new Network(size, p, mt);
 			for (double z = 0; z < 1; z+=0.02){
@@ -87,7 +85,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, z, (double)10/11, (double)1/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, z, p_, q, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}
