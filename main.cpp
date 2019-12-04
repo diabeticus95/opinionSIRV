@@ -15,7 +15,7 @@
 
 
 using namespace std;
-void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds,
+void run(int size, double p, int cutoff, std::mt19937 &mt, std::uniform_int_distribution<int> seeds,
 		std::string filename_base, double p_, double q, double b, double z){
 
 	std::uniform_int_distribution<int> neighbor_dist[18];
@@ -54,7 +54,7 @@ void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distr
 	}
 }
 int main() {
-	void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds,
+	void run(int size, double p, int cutoff, std::mt19937 &mt, std::uniform_int_distribution<int> seeds,
 			std::string filename_base, double p_, double q, double b, double z);
 
 	int size = 100000;
@@ -62,12 +62,11 @@ int main() {
 	int cutoff = 30;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.1, 0.7);
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.1, 0.8);
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.1, 0.9);
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.2, 0.7);
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.2, 0.8);
-	run(size, p, cutoff, mt, seeds, std::string("var4_snap_"), (double)1/2, (double)1/2, 0.2, 0.9);
+	for(int rep = 0; rep < 8; rep++){
+		run(size, p, cutoff, mt, seeds, std::string("var4_snap_rep"+to_string(rep)), (double)1/2, (double)1/2, 0.1, 0.7);
+		run(size, p, cutoff, mt, seeds, std::string("var4_snap_rep"+to_string(rep)), (double)1/2, (double)1/2, 0.1, 0.8);
+		run(size, p, cutoff, mt, seeds, std::string("var4_snap_rep"+to_string(rep)), (double)1/2, (double)1/2, 0.1, 0.9);
+	}
 
 	time_t end = clock();
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
