@@ -112,13 +112,13 @@ void Simulation::interact(int& agent_index, int& agent_opinion, int& neighbor_op
     if ((agent_opinion == 1 && neighbor_opinion > 0) && trigger < p){
       opinions_tmp[agent_index] = 2;
       vaccinate(agent_index);
-    } else if ((agent_opinion == -1 && neighbor_opinion < 0) && trigger < p){
+    } else if ((agent_opinion == -1 && neighbor_opinion < 0) && trigger < p/2){
     	opinions_tmp[agent_index] = -2;
     } else if ((agent_opinion == 1 && neighbor_opinion < 0) && trigger < q){
     	opinions_tmp[agent_index] = -1;
     } else if ((agent_opinion == -1 && neighbor_opinion > 0) && trigger < q){
     	opinions_tmp[agent_index]= 1;
-    } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q){
+    } else if ((agent_opinion == -2 && neighbor_opinion > 0) && trigger < q/2){
     	opinions_tmp[agent_index] = -1;
     }
 }
