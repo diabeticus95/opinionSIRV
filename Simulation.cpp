@@ -7,8 +7,8 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
-	b(b), z(z), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double z, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18],std::string filename) :
+	b(b), z(z), p(p), q(q), sirv(sirv), opinion(opinion), size(size), filename(filename){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
@@ -205,8 +205,8 @@ int Simulation::iterate_until_end_of_epidemy(){
 	while(get_sick_number()){
 		iterate_sirv();
 		if(debug) print_state_counts();
-		if(i == 0)print_for_charts("chart_op.csv", true);
-		else print_for_charts("chart_op.csv", false);
+		if(i == 0)print_for_charts(filename, true);
+		else print_for_charts(filename, false);
 		iterate_opinion();
 		i++;
 	}
