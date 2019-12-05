@@ -15,35 +15,47 @@
 #include <thread>
 
 
+
 using namespace std;
 
 int main() {
-	void simulate_parallel(int size, double p, int cutoff, int rep, int seed);
+	void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds, std::string filename_base,
+			double p_, double q);
 	int size = 100000;
 	double p = (double)4/size;
 	int cutoff = 200;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
-
 	time_t begin = clock();
+
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_r1"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_r10"), (double)10 / 11, (double)1 / 11);
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_r01"), (double)1 / 11, (double)10 / 11);
+
+	   
+	time_t end = clock();
+	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
+	std::cout<<"both iters "<<time_elapsed<<std::endl;
+
+	return 0;
+
+}
+
+void run(int size, double p, int cutoff, std::mt19937 mt, std::uniform_int_distribution<int> seeds, std::string filename_base, double p_, double q){
+	void simulate_parallel(int size, double p, int cutoff, int rep, int seed,std::string filename_base, double p_, double q);
 	const unsigned int n_of_chunks = 40;
 	std::thread threads_array[n_of_chunks];
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		int seed = seeds(mt);
-	    threads_array[chunk] = std::thread(simulate_parallel,size, p, cutoff,  chunk, seed);
+	    threads_array[chunk] = std::thread(simulate_parallel,size, p, cutoff, chunk, seed, filename_base, p_, q);
 	}
 	for (int chunk = 0; chunk < n_of_chunks; chunk++){
 		threads_array[chunk].join();
 	}
-	time_t end = clock();
-	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
-	std::cout<<"both iters "<<time_elapsed<<std::endl;
-	return 0;
-
 }
-void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
+void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std::string filename_base, double p_, double q){
 	std::mt19937 mt(seed);
 	std::uniform_int_distribution<int> neighbor_dist[18];
-	std::string filename("chart" + std::to_string(chunk) + ".csv");
+	std::string filename(filename_base + "_chunk" + std::to_string(chunk) + ".csv");
 	FILE* fp_w = fopen(filename.c_str(), "w");
 	FILE* fp_a = fopen(filename.c_str(), "a");
 	for(int i = 0; i < 18; i++){
@@ -65,7 +77,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					int abandon_counter = 0;
 					int days = 0;
 					do {
-						if(abandon_counter > 4) break;
+						if(abandon_counter > 2) break;
 						if(swap_counter > 0) delete sim;
 						if(swap_counter > 50){
 							delete sirv; delete opinion;
@@ -75,12 +87,12 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 							swap_counter = 0;
 							abandon_counter++;
 						}
-						sim = new Simulation(b_c, w, (double)1/11, (double)10/11, *sirv, *opinion, size, mt, neighbor_dist);
+						sim = new Simulation(b_c, w, p_, q, *sirv, *opinion, size, mt, neighbor_dist);
 						days = sim->iterate_until_end_of_epidemy();
 						swap_counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
-					if(abandon_counter > 4) continue;
+					if(abandon_counter > 2) continue;
 
 					if(w == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
@@ -89,7 +101,8 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed){
 					else sim->print_for_charts(fp_a, false, days);
 					delete sim;
 					clock_t iter_end = clock();
-					std::cout << "iteration no. " << (50*rep) + 50*w + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
+
+					std::cout << "iteration no. " << (250*rep) + 250*w + b + 1 << ", repeated " << abandon_counter * (swap_counter - 1) << " times" << std::endl;
 					std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 				}
 			}
