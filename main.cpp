@@ -97,7 +97,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 						swap_counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
-					if(abandon_counter > 4) continue;
+					if(abandon_counter > 2) continue;
 
 					if(z == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
