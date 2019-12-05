@@ -22,7 +22,10 @@ int main() {
 	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
-	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r1_w1"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var3_r1"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var3_r10"), (double)10/11, (double)1/11);
+	run(size, p, cutoff, mt, seeds, std::string("chart_var3_r01"), (double)1/11, (double)10/11);
+
 
 
 
