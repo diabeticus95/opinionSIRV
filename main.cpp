@@ -59,7 +59,7 @@ int main() {
 
 	int size = 100000;
 	double p = (double)4/size;
-	int cutoff = 30;
+	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
 	for(int rep = 0; rep < 8; rep++){
