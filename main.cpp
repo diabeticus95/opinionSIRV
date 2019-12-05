@@ -26,8 +26,6 @@ int main() {
 	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
-	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r01_w1"), (double)1/11, (double)10/11);
-	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r10_w1"), (double)10/11, (double)1/11);
 	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r1_w1"), (double)1/2, (double)1/2);
 
 
@@ -92,7 +90,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 						swap_counter++;
 					}
 					while (sim->get_recovered_number() <= cutoff);
-					if(abandon_counter > 4) continue;
+					if(abandon_counter > 2) continue;
 
 					if(z == 0 && b == 0 && rep == 0){
 						sim->print_for_charts(fp_w, true, days);
