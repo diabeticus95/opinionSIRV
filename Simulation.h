@@ -31,7 +31,7 @@ private:
 	std::uniform_int_distribution<int>* neighbor_dist;
 	int dying_period = 6;
 	double b; // bheta getting sick coefficient
-	double w = 0.99; // szczepionka skojarzona MMR przeciw odrze, œwince i ró¿yczce
+	double w = 1;
 	double z; // random antivax events
 	int lag; //vaccination delay if not succeded
 	double p; // extremization coefficient;
