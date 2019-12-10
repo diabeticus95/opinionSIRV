@@ -26,9 +26,9 @@ int main() {
 	int cutoff = 50;
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
-	run(size, p, cutoff, mt, seeds, std::string("chart_var4_r1_w1"), (double)1/2, (double)1/2);
-
-
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_var4_r01_w1"), (double)1/11, (double)10/11);
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_var4_r1_w1"), (double)1/2, (double)1/2);
+	run(size, p, cutoff, mt, seeds, std::string("output/chart_var4_r10_w1"), (double)10/11, (double)1/11);
 
 	time_t end = clock();
 	double time_elapsed = double(end - begin)/CLOCKS_PER_SEC;
@@ -70,7 +70,7 @@ void simulate_parallel(int size, double p, int cutoff, int chunk, int seed, std:
 					else if(b == 2) b_c = 0.4;
 					else if(b == 3) b_c = 0.6;
 					else if(b == 4) b_c = 0.8;
-					int lag = 9;
+					int lag = 6;
 					Simulation* sim;
 					int swap_counter = 0;
 					int abandon_counter = 0;
