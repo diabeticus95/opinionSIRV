@@ -10,7 +10,8 @@
 
 class Simulation {
 public:
-	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size,std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]);
+	Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size,std::mt19937& mt,
+			std::uniform_int_distribution<int> neighbor_dist[18], std::string filename);
 	virtual ~Simulation();
 	void print_feature_arrays();
 	void iterate_sirv();
@@ -45,10 +46,7 @@ private:
 	int* opinions_tmp;
 	char* states;
 	char* states_tmp;
-	std::vector<double> sir_time;
-	std::vector<double> op_time;
-	double sir_iter = 0;
-	double op_iter = 0;
+	std::string filename;
 
 	void init_states();
 	void init_opinions();

@@ -7,8 +7,9 @@
 #include <algorithm>
 #include "random.h"
 
-Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt, std::uniform_int_distribution<int> neighbor_dist[18]) :
-	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size){
+Simulation::Simulation(double b, double w, double p, double q, Network& sirv, Network& opinion, int size, std::mt19937& mt,
+		std::uniform_int_distribution<int> neighbor_dist[18], std::string filename) :
+	b(b), w(w), p(p), q(q), sirv(sirv), opinion(opinion), size(size), filename(filename){
 	r = p/q;
 	std::uniform_int_distribution<int> pcg_seed(0, RAND_MAX);
 	rand = pcg(mt, pcg_seed);
@@ -141,7 +142,6 @@ void Simulation::iterate_sirv(){
 		}
 	}
 // epidemy trial
-	clock_t begin = clock();
 	for(int i = 0; i < size; i++){
 		if(states[i] == 'S' || states[i] == 'V'){
 			int sick_neighbor = 0;
@@ -154,8 +154,6 @@ void Simulation::iterate_sirv(){
 			if(sick_neighbor > 0) infection_trial(i, sick_neighbor);
 		}
 	}
-	clock_t end = clock();
-	sir_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
 	for(int i = 0; i < size; i++){
 		states[i] = states_tmp[i];
 	}
@@ -164,8 +162,6 @@ void Simulation::iterate_sirv(){
 void Simulation::iterate_opinion(){
 	//iterate over all the individuals and give each one of them the chance to interact with only one of its neighbors
 	//This neighbor is chosen among those who can change the individual opinion.
-	clock_t begin = clock();
-
 	bool debug = false;
 	std::vector<int> interactive_neighbors;
 	int interaction_neighbor_opinion = 0;
@@ -206,9 +202,6 @@ void Simulation::iterate_opinion(){
 	for(int i = 0; i < size; i++){
 		opinions[i] = opinions_tmp[i];
 	}
-	clock_t end = clock();
-	op_time.push_back(double(end - begin) / CLOCKS_PER_SEC);
-
 }
 int Simulation::iterate_until_end_of_epidemy(){
 	int i = 0;
@@ -216,23 +209,11 @@ int Simulation::iterate_until_end_of_epidemy(){
 	while(get_sick_number()){
 		iterate_sirv();
 		if(debug) print_state_counts();
-		if(i == 0)print_for_charts("chart_op.csv", true);
-		else print_for_charts("chart_op.csv", false);
+		if(i == 0)print_for_charts(filename, true);
+		else print_for_charts(filename, false);
 		iterate_opinion();
 		i++;
 	}
-	/*for(auto &time : sir_time){
-		sir_iter += time;
-	}
-	for(auto &time : op_time){
-		op_iter += time;
-	}
-	sir_iter /= sir_time.size();
-	op_iter /= op_time.size();
-
-	std::cout<<"sir_iter = "<<sir_iter<<std::endl; // 0.015
-	std::cout<<"op_iter = "<<op_iter<<std::endl;*/
-
 	return i;
 }
 int Simulation::get_sick_number(){
@@ -248,12 +229,6 @@ int Simulation::get_recovered_number(){ //for cutoff
 		if(states[i] == 'R') R++;
 	}
 	return R;
-}
-double Simulation::get_sir_iter(){
-	return sir_iter;
-}
-double Simulation::get_op_iter(){
-	return op_iter;
 }
 
 void Simulation::print_feature_arrays(){
