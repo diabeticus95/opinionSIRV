@@ -46,6 +46,8 @@ void run(int size, double p, int cutoff, std::mt19937 &mt, std::uniform_int_dist
 			}
 			while (sim->get_recovered_number() <= cutoff);
 			delete sim;
+			delete sirv;
+			delete opinion;
 			clock_t iter_end = clock();
 			std::cout << "iteration time " << double(iter_end - iter_begin) / CLOCKS_PER_SEC << std::endl;
 	}
@@ -63,10 +65,11 @@ int main() {
 
 	std::mt19937 mt(time(0)); std::uniform_int_distribution<int> seeds(0, RAND_MAX);
 	time_t begin = clock();
-	for(int rep = 0; rep < 8; rep++){
-		run(size, p, cutoff, mt, seeds, std::string("rd_rep_"+to_string(rep) + "_r1.csv"), (double)1/2, (double)1/2, b, w);
-		run(size, p, cutoff, mt, seeds, std::string("rd_rep_"+to_string(rep) + "_r10.csv"), (double)10/11, (double)1/11, b, w);
-		run(size, p, cutoff, mt, seeds, std::string("rd_rep_"+to_string(rep) + "_r01.csv"), (double)1/11, (double)10/11, b, w);
+	for(int rep = 0; rep < 40; rep++){
+		std::cout<<"rep number "<<rep<<endl;
+		run(size, p, cutoff, mt, seeds, std::string("rd_pos10_rep_"+to_string(rep) + "_r1.csv"), (double)1/2, (double)1/2, b, w);
+		run(size, p, cutoff, mt, seeds, std::string("rd_pos10_rep_"+to_string(rep) + "_r10.csv"), (double)10/11, (double)1/11, b, w);
+		run(size, p, cutoff, mt, seeds, std::string("rd_pos10_rep_"+to_string(rep) + "_r01.csv"), (double)1/11, (double)10/11, b, w);
 	}
 
 	time_t end = clock();

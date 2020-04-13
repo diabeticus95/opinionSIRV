@@ -47,7 +47,7 @@ void Simulation::init_opinions(){
     for (int i = 0; i < size; i++){
     	double rnd = infection_dist(rand);
     	int rnd_2 = dist(rand);
-    	if(rnd < 0.87){ //wziete z ankiety CBOS
+    	if(rnd < 0.1){ //wziete z ankiety CBOS
     		if(rnd_2 == 0){
     			opinions[i] = 2;
         		vaccinate(i);
