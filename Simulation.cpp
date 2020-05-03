@@ -178,17 +178,17 @@ void Simulation::iterate_opinion(){
 		}
 		if(interactive_neighbors.size() == 0) continue;
 		else if( interactive_neighbors.size() == 1)
-					interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
-				else if(interactive_neighbors.size() > 1){
-					if(interactive_neighbors.size() < 20){
-						int random_index = neighbor_dist[interactive_neighbors.size() - 2](rand);
-						if(debug) std::cout<<"random index: "<<random_index<<std::endl;
-						interaction_neighbor_opinion = opinions[interactive_neighbors[random_index]];
-					}
-					else{
-						std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
-						interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
-					}
+			interaction_neighbor_opinion = opinions[interactive_neighbors[0]];
+		else if(interactive_neighbors.size() > 1){
+			if(interactive_neighbors.size() < 20){
+				int random_index = neighbor_dist[interactive_neighbors.size() - 2](rand);
+				if(debug) std::cout<<"random index: "<<random_index<<std::endl;
+				interaction_neighbor_opinion = opinions[interactive_neighbors[random_index]];
+			}
+			else{
+				std::uniform_int_distribution<int> opinion_dist(0, interactive_neighbors.size()-1);
+				interaction_neighbor_opinion = opinions[interactive_neighbors[opinion_dist(rand)]];
+			}
 		}
 		interact(i, agent_opinion, interaction_neighbor_opinion);
 		interactive_neighbors.clear();
